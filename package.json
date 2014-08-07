@@ -1,0 +1,28 @@
+{
+  "name": "request",
+  "version": "0.0.1",
+  "description": "requests for the browser and node.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanfaucett/request.git"
+  },
+  "main": "src/index.js",
+  "keywords": [
+    "request",
+    "request.js"
+  ],
+  "author": "Nathan Faucett",
+  "license": "BSD-2-Clause",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "grunt": "",
+    "grunt-jsbeautifier": ""
+  },
+  "dependencies": {
+    "http_error": "git://github.com/nathanfaucett/http_error",
+    "methods": "nathanfaucett/methods",
+    "url_path": "git://github.com/nathanfaucett/url_path",
+    "promise": "git://github.com/nathanfaucett/promise",
+    "utils": "nathanfaucett/utils"
+  }
+}

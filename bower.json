@@ -1,0 +1,24 @@
+{
+  "name": "request",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nathanfaucett/request",
+  "authors": [
+    "nathanfaucett <nathanfaucett@gmail.com>"
+  ],
+  "description": "requests for the browser and node.js",
+  "main": "src/index.js",
+  "keywords": [
+    "request",
+    "request.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "utils": "nathanfaucett/utils",
+    "methods": "nathanfaucett/methods"
+  }
+}

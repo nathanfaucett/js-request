@@ -1,19 +1,32 @@
 var methods = require("methods"),
+    type = require("type"),
+    each = require("each"),
     urlPath = require("url_path"),
     HttpError = require("http_error"),
-    utils = require("utils"),
     Promise = require("promise"),
     http, url;
 
 
 var isBrowser = !!(typeof(window) !== "undefined" && typeof(navigator) !== "undefined" && window.document),
-    request, sameOrigin, sameOrigin_url, sameOrigin_parts;
+    request;
 
+function noop() {}
 
-function Response(status) {
+function mixin(a, b) {
+    var key, value;
+
+    for (key in b) {
+        if (a[key] == null && (value = b[key]) != null) a[key] = value;
+    }
+    return a;
+}
+
+function Response(request, status) {
+    this._request = request;
+
     this.status = status;
     this.data = null;
-};
+}
 
 
 if (isBrowser) {
@@ -28,63 +41,68 @@ if (isBrowser) {
             }
         }
     });
-    
-    sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
-    sameOrigin_parts = sameOrigin_url.exec(location.href);
 
-    sameOrigin = function sameOrigin(href) {
-        if (!urlPath.isAbsoluteURL(href)) return true;
-        var parts = sameOrigin_url.exec(href.toLowerCase()),
-            urlPort, testPort;
-    
-        if (!parts) return false;
-    
-        urlPort = sameOrigin_parts[3];
-        testPort = parts[3];
-    
-        return !(
-            (parts[1] !== sameOrigin_parts[1]) ||
-            (parts[2] !== sameOrigin_parts[2]) || !(
-                (testPort === urlPort) ||
-                (!testPort && (urlPort === "80" || urlPort === "443")) ||
-                (!urlPort && (testPort === "80" || testPort === "443"))
-            )
-        );
+    Response.prototype.getHeader = function(name) {
+
+        return this._request.getResponseHeader(name);
     };
-    
+
+    var sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
+        sameOrigin_parts = sameOrigin_url.exec(location.href),
+
+        sameOrigin = function(href) {
+            if (!urlPath.isAbsoluteURL(href)) return true;
+            var parts = sameOrigin_url.exec(href.toLowerCase()),
+                urlPort, testPort;
+
+            if (!parts) return false;
+
+            urlPort = sameOrigin_parts[3];
+            testPort = parts[3];
+
+            return !(
+                (parts[1] !== sameOrigin_parts[1]) ||
+                (parts[2] !== sameOrigin_parts[2]) || !(
+                    (testPort === urlPort) ||
+                    (!testPort && (urlPort === "80" || urlPort === "443")) ||
+                    (!urlPort && (testPort === "80" || testPort === "443"))
+                )
+            );
+        };
+
     request = function request(opts) {
-        opts = utils.defaults(opts || {}, request.defaults);
-        
+        opts = mixin(opts || {}, request.defaults);
+
         var xhr = new XMLHttpRequest,
-    
-            src = utils.isString(opts.src || (opts.src = opts.url)) ? opts.src : null,
-            method = utils.isString(opts.method) ? opts.method.toUpperCase() : "GET",
-    
-            before = utils.isFunction(opts.before) ? opts.before : utils.noop,
-    
-            processData = opts.processData ? !! opts.processData : true,
+
+            src = type.isString(opts.src || (opts.src = opts.url)) ? opts.src : null,
+            method = type.isString(opts.method) ? opts.method.toUpperCase() : "GET",
+
+            before = type.isFunction(opts.before) ? opts.before : noop,
+
+            processData = opts.processData ? !!opts.processData : true,
             data = opts.data,
             hasData = data != null,
-    
-            type = utils.isString(opts.type) ? opts.type : null,
-            contentType = utils.isString(opts.contentType) ? opts.contentType : false,
+
+            dataType = type.isString(opts.type) ? opts.type : null,
+            contentType = type.isString(opts.contentType) ? opts.contentType : false,
             withCredentials = opts.withCredentials ? !!opts.withCredentials : false,
-    
-            async = opts.async != undefined ? !! opts.async : true,
+
+            async = opts.async != undefined ? !!opts.async : true,
             crossDomain = !sameOrigin(src);
-        
+
         return new Promise(function resolver(resolve, reject) {
-            
+
             xhr.addEventListener("load", function load() {
                 var status = this.status,
-                    response = new Response(status),
+                    response = new Response(this, status),
                     responseText, processedData;
-        
+
                 if ((status > 199 && status < 301) || status == 304) {
                     responseText = this.responseText;
-                    
+
                     if (processData) {
-                        if (type === "json") {
+                        if (dataType === "json") {
                             try {
                                 processedData = JSON.parse(responseText);
                             } catch (e) {
@@ -98,48 +116,48 @@ if (isBrowser) {
                     } else {
                         response.data = responseText;
                     }
-        
+
                     resolve(response);
                 } else {
                     reject(new HttpError(status, method + " " + src));
                 }
             }, false);
-        
+
             xhr.addEventListener("error", function error() {
                 reject(new HttpError(method + " " + src));
             }, false);
-            
+
             xhr.open(method, src, async, opts.username, opts.password);
-    
+
             if (xhr.overrideMimeType) {
-                if (type === "json") {
+                if (dataType === "json") {
                     xhr.overrideMimeType("application/json");
-                } else if (type === "xml") {
+                } else if (dataType === "xml") {
                     xhr.overrideMimeType("application/xml");
                 } else if (contentType) {
                     xhr.overrideMimeType(contentType);
                 }
             }
-        
+
             if (hasData) {
                 if (contentType !== false) {
                     xhr.setRequestHeader("Content-Type", contentType);
                 }
-                if (!utils.isObject(data)) {
-                    if (type === "json") {
+                if (!type.isObject(data)) {
+                    if (dataType === "json") {
                         data = JSON.stringify(data);
                     } else {
                         data = data + "";
                     }
                 }
             }
-    
+
             if (crossDomain) {
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
             }
-        
-            if (before !== utils.noop) before.call(xhr, xhr);
-        
+
+            if (before !== noop) before.call(xhr, xhr);
+
             xhr.send(data);
         });
     };
@@ -148,75 +166,81 @@ if (isBrowser) {
     url = require("url");
 
     request = function request(opts) {
-        opts = utils.defaults(opts || {}, request.defaults);
-        
-        var src = utils.isString(opts.src || (opts.src = opts.url)) ? opts.src : null,
+        opts = mixin(opts || {}, request.defaults);
+
+        Response.prototype.getHeader = function(name) {
+
+            return this._request.getHeader(name);
+        };
+
+        var src = type.isString(opts.src || (opts.src = opts.url)) ? opts.src : null,
             fullUrl = url.parse(src),
-            
-            method = utils.isString(opts.method) ? opts.method.toUpperCase() : "GET",
-    
-            before = utils.isFunction(opts.before) ? opts.before : utils.noop,
-    
-            processData = opts.processData ? !! opts.processData : true,
+
+            method = type.isString(opts.method) ? opts.method.toUpperCase() : "GET",
+
+            before = type.isFunction(opts.before) ? opts.before : noop,
+
+            processData = opts.processData ? !!opts.processData : true,
             data = opts.data,
             hasData = data != null,
-    
-            type = utils.isString(opts.type) ? opts.type : null,
-            contentType = utils.isString(opts.contentType) ? opts.contentType : false,
+
+            dataType = type.isString(opts.type) ? opts.type : null,
+            contentType = type.isString(opts.contentType) ? opts.contentType : false,
             withCredentials = opts.withCredentials ? !!opts.withCredentials : false,
-    
-            async = opts.async != undefined ? !! opts.async : true,
-            
+
+            async = opts.async != undefined ? !!opts.async : true,
+
             options = {
                 hostname: fullUrl.hostname,
                 port: fullUrl.port || 80,
                 path: fullUrl.pathname,
                 method: method,
-                auth: (opts.user && opts.password) ? opts.user +":"+ opts.password : null,
+                auth: (opts.user && opts.password) ? opts.user + ":" + opts.password : null,
                 agent: opts.agent,
                 headers: {}
             };
-        
+
         return new Promise(function resolver(resolve, reject) {
-            var results = "", req ;
-            
-            if (type === "json") {
+            var results = "",
+                req;
+
+            if (dataType === "json") {
                 options.headers["content-type"] = "application/json";
-            } else if (type === "xml") {
+            } else if (dataType === "xml") {
                 options.headers["content-type"] = "application/xml";
             } else if (contentType) {
                 options.headers["content-type"] = contentType;
             }
-            
+
             if (hasData) {
                 if (contentType !== false) {
                     options.headers["content-type"] = contentType;
                 }
-                if (!utils.isObject(data)) {
-                    if (type === "json") {
+                if (!type.isObject(data)) {
+                    if (dataType === "json") {
                         data = JSON.stringify(data);
                     } else {
                         data = data + "";
                     }
                 }
             }
-            
+
             req = http.request(options, function callback(res) {
-                
+
                 res.on("data", function data(chunk) {
                     results += chunk;
                 });
-                
+
                 res.on("end", function load() {
                     var status = res.statusCode,
-                        response = new Response(status),
+                        response = new Response(req, status),
                         responseText;
-                    
+
                     if ((status > 199 && status < 301) || status == 304) {
                         responseText = results;
-                        
+
                         if (processData) {
-                            if (type === "json") {
+                            if (dataType === "json") {
                                 try {
                                     processedData = JSON.parse(responseText);
                                 } catch (e) {
@@ -230,20 +254,20 @@ if (isBrowser) {
                         } else {
                             response.data = responseText;
                         }
-            
+
                         resolve(response);
                     } else {
                         reject(new HttpError(status, method + " " + src));
                     }
-                }); 
+                });
             });
-            
+
             req.on("error", function error(e) {
                 reject(new HttpError(e || method + " " + src));
             });
-            
-            if (before !== utils.noop) before.call(req, req);
-            
+
+            if (before !== noop) before.call(req, req);
+
             req.end(data);
         });
     };
@@ -251,10 +275,10 @@ if (isBrowser) {
 
 request.defaults = {
     url: null,
-    
+
     method: "GET",
 
-    before: utils.noop,
+    before: noop,
 
     processData: true,
     data: null,
@@ -264,18 +288,18 @@ request.defaults = {
     withCredentials: false
 };
 
-methods.forEach(function(method) {
+each(methods, function(method) {
     var upper = method.toUpperCase();
-    
+
     request[method] = function(opts) {
-        if (utils.isString(opts)) {
+        if (type.isString(opts)) {
             opts = {
                 src: opts
             };
         }
         opts || (opts = {});
         opts.method = upper;
-        
+
         return request(opts);
     };
 });

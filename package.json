@@ -23,6 +23,7 @@
     "methods": "nathanfaucett/methods",
     "url_path": "git://github.com/nathanfaucett/url_path",
     "promise": "git://github.com/nathanfaucett/promise",
-    "utils": "nathanfaucett/utils"
+    "type": "nathanfaucett/type",
+    "each": "nathanfaucett/each"
   }
 }

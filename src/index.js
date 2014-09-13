@@ -93,7 +93,7 @@ if (isBrowser) {
             crossDomain = !sameOrigin(src);
 
 
-        xhr.addEventListener("load", function load() {
+        function onload() {
             var status = this.status,
                 response = new Response(this, status),
                 responseText, processedData;
@@ -121,11 +121,30 @@ if (isBrowser) {
             } else {
                 error(new HttpError(status, method + " " + src));
             }
-        }, false);
+        }
 
-        xhr.addEventListener("error", function error() {
+        function onerror() {
             error(new HttpError(method + " " + src));
-        }, false);
+        }
+
+        if (xhr.addEventListener) {
+            xhr.addEventListener("load", onload, false);
+            xhr.addEventListener("error", onerror, false);
+        } else {
+            xhr.onreadystatechange = function onreadystatechange() {
+                var status;
+
+                if (+xhr.readyState === 4) {
+                    status = +xhr.status;
+
+                    if ((status > 199 && status < 301) || status == 304) {
+                        onload.call(xhr);
+                    } else {
+                        onerror.call(xhr);
+                    }
+                }
+            };
+        }
 
         xhr.open(method, src, async, opts.username, opts.password);
 
@@ -226,11 +245,11 @@ if (isBrowser) {
 
         req = http.request(options, function callback(res) {
 
-            res.on("data", function data(chunk) {
+            res.on("data", function ondata(chunk) {
                 results += chunk;
             });
 
-            res.on("end", function load() {
+            res.on("end", function onload() {
                 var status = res.statusCode,
                     response = new Response(req, status),
                     responseText;
@@ -261,7 +280,7 @@ if (isBrowser) {
             });
         });
 
-        req.on("error", function error(e) {
+        req.on("error", function onerror(e) {
             error(new HttpError(e || method + " " + src));
         });
 

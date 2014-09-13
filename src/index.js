@@ -3,7 +3,6 @@ var methods = require("methods"),
     each = require("each"),
     urlPath = require("url_path"),
     HttpError = require("http_error"),
-    Promise = require("promise"),
     http, url;
 
 
@@ -79,6 +78,8 @@ if (isBrowser) {
             method = type.isString(opts.method) ? opts.method.toUpperCase() : "GET",
 
             before = type.isFunction(opts.before) ? opts.before : noop,
+            success = type.isFunction(opts.success) ? opts.success : noop,
+            error = type.isFunction(opts.error) ? opts.error : noop,
 
             processData = opts.processData ? !!opts.processData : true,
             data = opts.data,
@@ -91,75 +92,73 @@ if (isBrowser) {
             async = opts.async != undefined ? !!opts.async : true,
             crossDomain = !sameOrigin(src);
 
-        return new Promise(function resolver(resolve, reject) {
 
-            xhr.addEventListener("load", function load() {
-                var status = this.status,
-                    response = new Response(this, status),
-                    responseText, processedData;
+        xhr.addEventListener("load", function load() {
+            var status = this.status,
+                response = new Response(this, status),
+                responseText, processedData;
 
-                if ((status > 199 && status < 301) || status == 304) {
-                    responseText = this.responseText;
+            if ((status > 199 && status < 301) || status == 304) {
+                responseText = this.responseText;
 
-                    if (processData) {
-                        if (dataType === "json") {
-                            try {
-                                processedData = JSON.parse(responseText);
-                            } catch (e) {
-                                reject(new HttpError(422, e.message));
-                                return;
-                            }
-                            response.data = processedData;
-                        } else {
-                            response.data = responseText;
+                if (processData) {
+                    if (dataType === "json") {
+                        try {
+                            processedData = JSON.parse(responseText);
+                        } catch (e) {
+                            error(new HttpError(422, e.message));
+                            return;
                         }
+                        response.data = processedData;
                     } else {
                         response.data = responseText;
                     }
-
-                    resolve(response);
                 } else {
-                    reject(new HttpError(status, method + " " + src));
+                    response.data = responseText;
                 }
-            }, false);
 
-            xhr.addEventListener("error", function error() {
-                reject(new HttpError(method + " " + src));
-            }, false);
+                success(response);
+            } else {
+                error(new HttpError(status, method + " " + src));
+            }
+        }, false);
 
-            xhr.open(method, src, async, opts.username, opts.password);
+        xhr.addEventListener("error", function error() {
+            error(new HttpError(method + " " + src));
+        }, false);
 
-            if (xhr.overrideMimeType) {
+        xhr.open(method, src, async, opts.username, opts.password);
+
+        if (xhr.overrideMimeType) {
+            if (dataType === "json") {
+                xhr.overrideMimeType("application/json");
+            } else if (dataType === "xml") {
+                xhr.overrideMimeType("application/xml");
+            } else if (contentType) {
+                xhr.overrideMimeType(contentType);
+            }
+        }
+
+        if (hasData) {
+            if (contentType !== false) {
+                xhr.setRequestHeader("Content-Type", contentType);
+            }
+            if (!type.isObject(data)) {
                 if (dataType === "json") {
-                    xhr.overrideMimeType("application/json");
-                } else if (dataType === "xml") {
-                    xhr.overrideMimeType("application/xml");
-                } else if (contentType) {
-                    xhr.overrideMimeType(contentType);
+                    data = JSON.stringify(data);
+                } else {
+                    data = data + "";
                 }
             }
+        }
 
-            if (hasData) {
-                if (contentType !== false) {
-                    xhr.setRequestHeader("Content-Type", contentType);
-                }
-                if (!type.isObject(data)) {
-                    if (dataType === "json") {
-                        data = JSON.stringify(data);
-                    } else {
-                        data = data + "";
-                    }
-                }
-            }
+        if (crossDomain) {
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+        }
 
-            if (crossDomain) {
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-            }
+        if (before !== noop) before.call(xhr, xhr);
 
-            if (before !== noop) before.call(xhr, xhr);
-
-            xhr.send(data);
-        });
+        xhr.send(data);
     };
 } else {
     http = require("http");
@@ -179,6 +178,8 @@ if (isBrowser) {
             method = type.isString(opts.method) ? opts.method.toUpperCase() : "GET",
 
             before = type.isFunction(opts.before) ? opts.before : noop,
+            success = type.isFunction(opts.success) ? opts.success : noop,
+            error = type.isFunction(opts.error) ? opts.error : noop,
 
             processData = opts.processData ? !!opts.processData : true,
             data = opts.data,
@@ -198,78 +199,75 @@ if (isBrowser) {
                 auth: (opts.user && opts.password) ? opts.user + ":" + opts.password : null,
                 agent: opts.agent,
                 headers: {}
-            };
+            },
 
-        return new Promise(function resolver(resolve, reject) {
-            var results = "",
-                req;
+            req, results = "";
 
-            if (dataType === "json") {
-                options.headers["content-type"] = "application/json";
-            } else if (dataType === "xml") {
-                options.headers["content-type"] = "application/xml";
-            } else if (contentType) {
+        if (dataType === "json") {
+            options.headers["content-type"] = "application/json";
+        } else if (dataType === "xml") {
+            options.headers["content-type"] = "application/xml";
+        } else if (contentType) {
+            options.headers["content-type"] = contentType;
+        }
+
+        if (hasData) {
+            if (contentType !== false) {
                 options.headers["content-type"] = contentType;
             }
-
-            if (hasData) {
-                if (contentType !== false) {
-                    options.headers["content-type"] = contentType;
-                }
-                if (!type.isObject(data)) {
-                    if (dataType === "json") {
-                        data = JSON.stringify(data);
-                    } else {
-                        data = data + "";
-                    }
+            if (!type.isObject(data)) {
+                if (dataType === "json") {
+                    data = JSON.stringify(data);
+                } else {
+                    data = data + "";
                 }
             }
+        }
 
-            req = http.request(options, function callback(res) {
+        req = http.request(options, function callback(res) {
 
-                res.on("data", function data(chunk) {
-                    results += chunk;
-                });
+            res.on("data", function data(chunk) {
+                results += chunk;
+            });
 
-                res.on("end", function load() {
-                    var status = res.statusCode,
-                        response = new Response(req, status),
-                        responseText;
+            res.on("end", function load() {
+                var status = res.statusCode,
+                    response = new Response(req, status),
+                    responseText;
 
-                    if ((status > 199 && status < 301) || status == 304) {
-                        responseText = results;
+                if ((status > 199 && status < 301) || status == 304) {
+                    responseText = results;
 
-                        if (processData) {
-                            if (dataType === "json") {
-                                try {
-                                    processedData = JSON.parse(responseText);
-                                } catch (e) {
-                                    reject(new HttpError(422, e.message));
-                                    return;
-                                }
-                                response.data = processedData;
-                            } else {
-                                response.data = responseText;
+                    if (processData) {
+                        if (dataType === "json") {
+                            try {
+                                processedData = JSON.parse(responseText);
+                            } catch (e) {
+                                error(new HttpError(422, e.message));
+                                return;
                             }
+                            response.data = processedData;
                         } else {
                             response.data = responseText;
                         }
-
-                        resolve(response);
                     } else {
-                        reject(new HttpError(status, method + " " + src));
+                        response.data = responseText;
                     }
-                });
+
+                    success(response);
+                } else {
+                    error(new HttpError(status, method + " " + src));
+                }
             });
-
-            req.on("error", function error(e) {
-                reject(new HttpError(e || method + " " + src));
-            });
-
-            if (before !== noop) before.call(req, req);
-
-            req.end(data);
         });
+
+        req.on("error", function error(e) {
+            error(new HttpError(e || method + " " + src));
+        });
+
+        if (before !== noop) before.call(req, req);
+
+        req.end(data);
     };
 }
 

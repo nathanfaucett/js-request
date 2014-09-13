@@ -162,7 +162,7 @@ if (isBrowser) {
             if (contentType !== false) {
                 xhr.setRequestHeader("Content-Type", contentType);
             }
-            if (!type.isObject(data)) {
+            if (type.isObject(data)) {
                 if (dataType === "json") {
                     data = JSON.stringify(data);
                 } else {
@@ -234,7 +234,7 @@ if (isBrowser) {
             if (contentType !== false) {
                 options.headers["content-type"] = contentType;
             }
-            if (!type.isObject(data)) {
+            if (type.isObject(data)) {
                 if (dataType === "json") {
                     data = JSON.stringify(data);
                 } else {

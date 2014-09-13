@@ -94,11 +94,11 @@ if (isBrowser) {
 
 
         function onload() {
-            var status = this.status,
+            var status = +this.status,
                 response = new Response(this, status),
                 responseText, processedData;
 
-            if ((status > 199 && status < 301) || status == 304) {
+            if ((status > 199 && status < 301) || status === 304) {
                 responseText = this.responseText;
 
                 if (processData) {
@@ -124,7 +124,7 @@ if (isBrowser) {
         }
 
         function onerror() {
-            error(new HttpError(method + " " + src));
+            error(new HttpError(+this.status, method + " " + src));
         }
 
         if (xhr.addEventListener) {
@@ -137,7 +137,7 @@ if (isBrowser) {
                 if (+xhr.readyState === 4) {
                     status = +xhr.status;
 
-                    if ((status > 199 && status < 301) || status == 304) {
+                    if ((status > 199 && status < 301) || status === 304) {
                         onload.call(xhr);
                     } else {
                         onerror.call(xhr);
@@ -244,17 +244,18 @@ if (isBrowser) {
         }
 
         req = http.request(options, function callback(res) {
+            req.res = res;
 
             res.on("data", function ondata(chunk) {
                 results += chunk;
             });
 
             res.on("end", function onload() {
-                var status = res.statusCode,
+                var status = +res.statusCode,
                     response = new Response(req, status),
                     responseText;
 
-                if ((status > 199 && status < 301) || status == 304) {
+                if ((status > 199 && status < 301) || status === 304) {
                     responseText = results;
 
                     if (processData) {
@@ -281,7 +282,7 @@ if (isBrowser) {
         });
 
         req.on("error", function onerror(e) {
-            error(new HttpError(e || method + " " + src));
+            error(new HttpError(req.res.statusCode, e || method + " " + src));
         });
 
         if (before !== noop) before.call(req, req);

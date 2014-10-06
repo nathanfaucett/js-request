@@ -64,11 +64,6 @@ function parseResponseHeaders(responseHeaders) {
 
             if (key === "Content-Length") {
                 value = +value;
-            } else if (key === "Date" || key === "Last-Modified") {
-                tmp = new Date(value);
-                if (tmp.getTime()) {
-                    value = tmp;
-                }
             }
 
             headers[key] = value;

@@ -16,6 +16,7 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "grunt": "",
+    "grunt-contrib-jshint": "^0.10.0",
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "url_path": "git://github.com/nathanfaucett/url_path",
     "promise": "git://github.com/nathanfaucett/promise",
     "type": "nathanfaucett/type",
-    "each": "nathanfaucett/each"
+    "each": "nathanfaucett/each",
+    "utils": "nathanfaucett/utils"
   }
 }

@@ -1,0 +1,11 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "dependencies": {
+    "cors": "nathanfaucett/cors",
+    "body_parser": "nathanfaucett/body_parser",
+    "layers": "nathanfaucett/layers",
+    "context": "nathanfaucett/context"
+  }
+}
+

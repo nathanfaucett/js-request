@@ -26,29 +26,26 @@ router.route()
         });
         next();
     })
+    .post(function(req, res, next) {
 
-.post(function(req, res, next) {
+        res.json(req.body);
+        next();
+    })
+    .patch(function(req, res, next) {
 
-    res.json(req.body);
-    next();
-})
+        res.json(req.body);
+        next();
+    })
+    .all(function(err, req, res, next) {
+        if (!res.sent) {
+            res.statusCode = (res.statusCode < 301 || res.statusCode === 304) ? 404 : res.statusCode;
 
-.patch(function(req, res, next) {
-
-    res.json(req.body);
-    next();
-})
-
-.all(function(err, req, res, next) {
-    if (!res.sent) {
-        res.statusCode = (res.statusCode < 301 || res.statusCode === 304) ? 404 : res.statusCode;
-
-        res.json({
-            statusCode: res.statusCode,
-            message: (err || "Not Found") + ""
-        });
-    }
-    next();
-});
+            res.json({
+                statusCode: res.statusCode,
+                message: (err || "Not Found") + ""
+            });
+        }
+        next();
+    });
 
 server.listen(3000);

@@ -1,7 +1,7 @@
 var PolyPromise = require("promise"),
     type = require("type"),
     each = require("each"),
-    urlPath = request("url_path"),
+    urlPath = require("url_path"),
     utils = require("utils");
 
 

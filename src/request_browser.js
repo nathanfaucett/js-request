@@ -12,7 +12,7 @@ var defaults = require("./defaults"),
     sameOrigin_parts = sameOrigin_url.exec(location.href);
 
 
-window.XMLHttpRequest || (window.XMLHttpRequest = function XMLHttpRequest() {
+defaults.XMLHttpRequest = window.XMLHttpRequest || (window.XMLHttpRequest = function XMLHttpRequest() {
     try {
         return new ActiveXObject("Msxml2.XMLHTTP.6.0");
     } catch (e1) {
@@ -75,7 +75,7 @@ function parseResponseHeaders(responseHeaders) {
 }
 
 function request(options) {
-    var xhr = new XMLHttpRequest(),
+    var xhr = new defaults.XMLHttpRequest(),
         defer;
 
     options = defaults(options);

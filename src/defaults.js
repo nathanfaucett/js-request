@@ -24,7 +24,10 @@ function defaults(options) {
 defaults.values = {
     url: "",
     method: "GET",
-    headers: {}
+    headers: {
+        Accept: "*/*",
+        "X-Requested-With": "XMLHttpRequest"
+    }
 };
 
 

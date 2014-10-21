@@ -17,12 +17,23 @@ request.get("http://localhost:3000").then(
 );
 
 global.uploadObject = function() {
+    var formData = new FormData(),
+        file = new File(["{\"hey\": \"value\"}"], "hey.json", {
+            type: "application/json"
+        });
 
-    request.post("http://localhost:3000", {
-        firstName: "Nathan",
-        lastName: "Faucett"
+    formData.append("jsonFile", file);
+    formData.append("firstName", "Nathan");
+    formData.append("lastName", "Faucett");
+
+    console.time("post");
+    request.post("http://localhost:3000", formData, {
+        headers: {
+            "Content-Type": null
+        }
     }).then(
         function(response) {
+            console.timeEnd("post");
             console.log(response);
         },
         function(response) {

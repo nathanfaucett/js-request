@@ -37,6 +37,23 @@ function parseResponseHeaders(responseHeaders) {
     return headers;
 }
 
+function parseContentType(str) {
+    var index;
+
+    if (str) {
+        if ((index = str.indexOf(";")) !== -1) {
+            str = str.substring(0, index);
+        }
+        if ((index = str.indexOf(",")) !== -1) {
+            return str.substring(0, index);
+        }
+
+        return str;
+    }
+
+    return "application/octet-stream";
+}
+
 function request(options) {
     var results = "",
         defer, fullUrl, nodeOptions, req;
@@ -81,7 +98,7 @@ function request(options) {
 
             response.data = responseText;
 
-            if (options.headers["Content-Type"] === "application/json") {
+            if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                 try {
                     processedData = JSON.parse(responseText);
                 } catch (e) {

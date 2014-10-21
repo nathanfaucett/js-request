@@ -10,6 +10,9 @@ function defaults(options) {
 
     options.data = options.data;
 
+    options.parseRequest = type.isFunction(options.parseRequest) ? options.parseRequest : null;
+    options.parseResponse = type.isFunction(options.parseResponse) ? options.parseResponse : null;
+
     options.withCredentials = options.withCredentials != null ? !!options.withCredentials : false;
     options.headers = utils.mixin({}, options.headers);
     options.async = options.async != null ? !!options.async : true;

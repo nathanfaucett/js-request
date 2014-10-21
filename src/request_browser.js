@@ -7,6 +7,7 @@ var PolyPromise = require("promise"),
 
 var defaults = require("./defaults"),
 
+    supoortsFormData = typeof(FormData) !== "undefined",
     TRIM_REGEX = /^[\s\xA0]+|[\s\xA0]+$/g,
     sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
     sameOrigin_parts = sameOrigin_url.exec(location.href);
@@ -74,11 +75,30 @@ function parseResponseHeaders(responseHeaders) {
     return headers;
 }
 
+function parseContentType(str) {
+    var index;
+
+    if (str) {
+        if ((index = str.indexOf(";")) !== -1) {
+            str = str.substring(0, index);
+        }
+        if ((index = str.indexOf(",")) !== -1) {
+            return str.substring(0, index);
+        }
+
+        return str;
+    }
+
+    return "application/octet-stream";
+}
+
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
-        defer;
+        isFormDate, defer;
 
     options = defaults(options);
+
+    isFormDate = (supoortsFormData && options.data instanceof FormData);
 
     if (options.isPromise) {
         defer = PolyPromise.defer();
@@ -115,7 +135,7 @@ function request(options) {
 
         response.data = responseText;
 
-        if (options.headers["Content-Type"] === "application/json") {
+        if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
             try {
                 processedData = JSON.parse(responseText);
             } catch (e) {
@@ -162,11 +182,11 @@ function request(options) {
         xhr.setRequestHeader(key, value);
     });
 
-    if (!sameOrigin(options.url)) {
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+    if (!sameOrigin(options.url) && !isFormDate) {
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
 
-    if (!type.isString(options.data)) {
+    if (!type.isString(options.data) && !isFormDate) {
         if (options.headers["Content-Type"] === "application/json") {
             options.data = JSON.stringify(options.data);
         } else {

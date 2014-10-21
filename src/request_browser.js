@@ -94,11 +94,11 @@ function parseContentType(str) {
 
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
-        isFormDate, defer;
+        isFormData, defer;
 
     options = defaults(options);
 
-    isFormDate = (supoortsFormData && options.data instanceof FormData);
+    isFormData = (supoortsFormData && options.data instanceof FormData);
 
     if (options.isPromise) {
         defer = PolyPromise.defer();
@@ -128,9 +128,7 @@ function request(options) {
 
         response.statusCode = statusCode;
 
-        if (xhr.getAllResponseHeaders) {
-            response.responseHeaders = parseResponseHeaders(xhr.getAllResponseHeaders());
-        }
+        response.responseHeaders = xhr.getAllResponseHeaders ? parseResponseHeaders(xhr.getAllResponseHeaders()) : {};
         response.requestHeaders = options.headers ? utils.copy(options.headers) : {};
 
         response.data = responseText;
@@ -182,11 +180,11 @@ function request(options) {
         xhr.setRequestHeader(key, value);
     });
 
-    if (!sameOrigin(options.url) && !isFormDate) {
+    if (!sameOrigin(options.url) && !isFormData) {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
 
-    if (!type.isString(options.data) && !isFormDate) {
+    if (!type.isString(options.data) && !isFormData) {
         if (options.headers["Content-Type"] === "application/json") {
             options.data = JSON.stringify(options.data);
         } else {

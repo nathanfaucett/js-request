@@ -131,7 +131,7 @@ function request(options) {
         response.responseHeaders = xhr.getAllResponseHeaders ? parseResponseHeaders(xhr.getAllResponseHeaders()) : {};
         response.requestHeaders = options.headers ? utils.copy(options.headers) : {};
 
-        response.data = responseText;
+        response.data = null;
 
         if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
             try {
@@ -141,6 +141,8 @@ function request(options) {
                 return;
             }
             response.data = processedData;
+        } else if (responseText) {
+            response.data = responseText;
         }
 
         if ((statusCode > 199 && statusCode < 301) || statusCode === 304) {

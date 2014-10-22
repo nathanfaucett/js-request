@@ -25,6 +25,8 @@ each(methods, function(method) {
     };
 });
 
+request.mSearch = request["m-search"];
+
 request.post = function(url, data, options) {
     return request(utils.mixin({
         url: url,

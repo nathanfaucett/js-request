@@ -3,15 +3,15 @@ var utils = require("utils"),
 
 
 function defaults(options) {
-    options = utils.mixin(options || {}, defaults.values);
+    options = utils.mixin({}, options, defaults.values);
 
     options.url = type.isString(options.url || (options.url = options.src)) ? options.url : null;
     options.method = type.isString(options.method) ? options.method.toUpperCase() : "GET";
 
     options.data = options.data;
 
-    options.parseRequest = type.isFunction(options.parseRequest) ? options.parseRequest : null;
-    options.parseResponse = type.isFunction(options.parseResponse) ? options.parseResponse : null;
+    options.transformRequest = type.isFunction(options.transformRequest) ? options.transformRequest : null;
+    options.transformResponse = type.isFunction(options.transformResponse) ? options.transformResponse : null;
 
     options.withCredentials = options.withCredentials != null ? !!options.withCredentials : false;
     options.headers = utils.mixin({}, options.headers);

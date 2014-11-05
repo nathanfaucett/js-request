@@ -98,16 +98,20 @@ function request(options) {
 
             response.data = null;
 
-            if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
-                try {
-                    processedData = JSON.parse(responseText);
-                } catch (e) {
-                    onerror(response);
-                    return;
+            if (options.transformResponse) {
+                response.data = options.transformResponse(processedData);
+            } else {
+                if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
+                    try {
+                        processedData = JSON.parse(responseText);
+                    } catch (e) {
+                        onerror(response);
+                        return;
+                    }
+                    response.data = processedData;
+                } else if (responseText) {
+                    response.data = responseText;
                 }
-                response.data = processedData;
-            } else if (responseText) {
-                response.data = responseText;
             }
 
             if ((statusCode > 199 && statusCode < 301) || statusCode === 304) {
@@ -129,11 +133,15 @@ function request(options) {
         headers: options.headers
     };
 
-    if (!type.isString(options.data)) {
-        if (options.headers["Content-Type"] === "application/json") {
-            options.data = JSON.stringify(options.data);
-        } else {
-            options.data = options.data + "";
+    if (options.transformRequest) {
+        options.data = options.transformRequest(options.data);
+    } else {
+        if (!type.isString(options.data) && !isFormData) {
+            if (options.headers["Content-Type"] === "application/json") {
+                options.data = JSON.stringify(options.data);
+            } else {
+                options.data = options.data + "";
+            }
         }
     }
 

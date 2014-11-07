@@ -11,10 +11,7 @@ var Cors = require("cors"),
     });
 
 router.use(
-    new Cors({
-        origin: "http://localhost",
-        credentials: true
-    }),
+    new Cors(),
     new BodyParser()
 );
 

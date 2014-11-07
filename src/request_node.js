@@ -3,10 +3,9 @@ var PolyPromise = require("promise"),
     each = require("each"),
     utils = require("utils"),
     http = require("http"),
-    nodeURL = require("url");
+    nodeURL = require("url"),
+    defaults = require("./defaults");
 
-
-var defaults = require("./defaults");
 
 function capitalize(str) {
 
@@ -88,8 +87,7 @@ function request(options) {
         res.on("end", function onload() {
             var statusCode = +res.statusCode,
                 response = {},
-                responseText = results,
-                processedData;
+                responseText = results;
 
             response.statusCode = statusCode;
 
@@ -99,16 +97,15 @@ function request(options) {
             response.data = null;
 
             if (options.transformResponse) {
-                response.data = options.transformResponse(processedData);
+                response.data = options.transformResponse(responseText);
             } else {
                 if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                     try {
-                        processedData = JSON.parse(responseText);
+                        response.data = JSON.parse(responseText);
                     } catch (e) {
                         onerror(response);
                         return;
                     }
-                    response.data = processedData;
                 } else if (responseText) {
                     response.data = responseText;
                 }
@@ -136,7 +133,7 @@ function request(options) {
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
     } else {
-        if (!type.isString(options.data) && !isFormData) {
+        if (!type.isString(options.data)) {
             if (options.headers["Content-Type"] === "application/json") {
                 options.data = JSON.stringify(options.data);
             } else {

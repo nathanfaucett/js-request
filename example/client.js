@@ -1,6 +1,6 @@
 global.request = require("../src/index.js");
 
-request.defaults.withCredentials = true;
+//request.defaults.withCredentials = true;
 request.defaults.headers["Content-Type"] = "application/json";
 
 

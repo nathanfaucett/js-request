@@ -2,28 +2,32 @@ var PolyPromise = require("promise"),
     type = require("type"),
     each = require("each"),
     urlPath = require("url_path"),
-    utils = require("utils");
+    utils = require("utils"),
+    defaults = require("./defaults");
 
 
-var defaults = require("./defaults"),
-
-    supoortsFormData = typeof(FormData) !== "undefined",
-    TRIM_REGEX = /^[\s\xA0]+|[\s\xA0]+$/g,
+var supoortsFormData = typeof(FormData) !== "undefined",
     sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
-    sameOrigin_parts = sameOrigin_url.exec(location.href);
+    sameOrigin_parts = sameOrigin_url.exec(location.href),
+    supportsEventListener;
 
 
-defaults.values.XMLHttpRequest = window.XMLHttpRequest || (window.XMLHttpRequest = function XMLHttpRequest() {
-    try {
-        return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-    } catch (e1) {
+defaults.values.XMLHttpRequest = (
+    global.XMLHttpRequest ||
+    function XMLHttpRequest() {
         try {
-            return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-        } catch (e2) {
-            throw new Error("XMLHttpRequest is not supported");
+            return new ActiveXObject("Msxml2.XMLHTTP.6.0");
+        } catch (e1) {
+            try {
+                return new ActiveXObject("Msxml2.XMLHTTP.3.0");
+            } catch (e2) {
+                throw new Error("XMLHttpRequest is not supported");
+            }
         }
     }
-});
+);
+supportsEventListener = type.isNative(defaults.values.XMLHttpRequest.prototype.addEventListener);
+
 
 function sameOrigin(href) {
     var parts, urlPort, testPort;
@@ -47,11 +51,6 @@ function sameOrigin(href) {
     );
 }
 
-function trim(str) {
-
-    return str.replace(TRIM_REGEX, "");
-}
-
 function parseResponseHeaders(responseHeaders) {
     var headers = {},
         raw = responseHeaders.split("\n");
@@ -62,7 +61,7 @@ function parseResponseHeaders(responseHeaders) {
             value = tmp[1];
 
         if (key && value) {
-            value = trim(value);
+            value = utils.trim(value);
 
             if (key === "Content-Length") {
                 value = +value;
@@ -123,8 +122,7 @@ function request(options) {
     function oncomplete() {
         var statusCode = +xhr.status,
             response = {},
-            responseText = xhr.responseText,
-            processedData;
+            responseText = xhr.responseText;
 
         response.statusCode = statusCode;
 
@@ -134,16 +132,15 @@ function request(options) {
         response.data = null;
 
         if (options.transformResponse) {
-            response.data = options.transformResponse(processedData);
+            response.data = options.transformResponse(responseText);
         } else {
             if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                 try {
-                    processedData = JSON.parse(responseText);
+                    response.data = JSON.parse(responseText);
                 } catch (e) {
                     onerror(response);
                     return;
                 }
-                response.data = processedData;
             } else if (responseText) {
                 response.data = responseText;
             }
@@ -156,7 +153,7 @@ function request(options) {
         }
     }
 
-    if (xhr.addEventListener) {
+    if (supportsEventListener) {
         xhr.addEventListener("load", oncomplete, false);
         xhr.addEventListener("error", oncomplete, false);
     } else {
@@ -167,14 +164,14 @@ function request(options) {
         };
     }
 
-    if (options.withCredentials && options.async !== false) {
+    if (options.withCredentials && options.async) {
         xhr.withCredentials = options.withCredentials;
     }
 
     xhr.open(
         options.method,
         options.url,
-        options.async !== false,
+        options.async,
         options.username,
         options.password
     );

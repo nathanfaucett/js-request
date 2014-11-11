@@ -89,6 +89,9 @@ function request(options) {
                 response = {},
                 responseText = results;
 
+            response.method = options.method;
+            response.url = options.url;
+
             response.statusCode = statusCode;
 
             response.responseHeaders = parseResponseHeaders(res.headers);

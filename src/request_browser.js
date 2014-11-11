@@ -124,6 +124,9 @@ function request(options) {
             response = {},
             responseText = xhr.responseText;
 
+        response.method = options.method;
+        response.url = options.url;
+
         response.statusCode = statusCode;
 
         response.responseHeaders = xhr.getAllResponseHeaders ? parseResponseHeaders(xhr.getAllResponseHeaders()) : {};

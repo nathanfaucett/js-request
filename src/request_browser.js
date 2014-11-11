@@ -134,18 +134,20 @@ function request(options) {
 
         response.data = null;
 
-        if (options.transformResponse) {
-            response.data = options.transformResponse(responseText);
-        } else {
-            if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
-                try {
-                    response.data = JSON.parse(responseText);
-                } catch (e) {
-                    onerror(response);
-                    return;
+        if (responseText) {
+            if (options.transformResponse) {
+                response.data = options.transformResponse(responseText);
+            } else {
+                if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
+                    try {
+                        response.data = JSON.parse(responseText);
+                    } catch (e) {
+                        onerror(response);
+                        return;
+                    }
+                } else if (responseText) {
+                    response.data = responseText;
                 }
-            } else if (responseText) {
-                response.data = responseText;
             }
         }
 

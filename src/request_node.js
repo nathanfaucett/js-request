@@ -89,8 +89,8 @@ function request(options) {
                 response = {},
                 responseText = results;
 
-            response.method = options.method;
             response.url = options.url;
+            response.method = options.method;
 
             response.statusCode = statusCode;
 

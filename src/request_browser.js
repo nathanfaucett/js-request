@@ -124,8 +124,8 @@ function request(options) {
             response = {},
             responseText = xhr.responseText;
 
+        response.url = xhr.responseURL || options.url;
         response.method = options.method;
-        response.url = options.url;
 
         response.statusCode = statusCode;
 

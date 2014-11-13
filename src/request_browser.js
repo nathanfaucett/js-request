@@ -121,8 +121,8 @@ function request(options) {
 
     function oncomplete() {
         var statusCode = +xhr.status,
-            response = {},
-            responseText = xhr.responseText;
+            responseText = xhr.responseText,
+            response = {};
 
         response.url = xhr.responseURL || options.url;
         response.method = options.method;
@@ -142,6 +142,7 @@ function request(options) {
                     try {
                         response.data = JSON.parse(responseText);
                     } catch (e) {
+                        response.data = e;
                         onerror(response);
                         return;
                     }

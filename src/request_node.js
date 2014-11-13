@@ -107,6 +107,7 @@ function request(options) {
                         try {
                             response.data = JSON.parse(responseText);
                         } catch (e) {
+                            response.data = e;
                             onerror(response);
                             return;
                         }

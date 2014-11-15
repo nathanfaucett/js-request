@@ -93,6 +93,8 @@ function parseContentType(str) {
 
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
+        canSetRequestHeader = type.isFunction(xhr.setRequestHeader),
+        canOverrideMimeType = type.isFunction(xhr.overrideMimeType),
         isFormData, defer;
 
     options = defaults(options);
@@ -182,14 +184,16 @@ function request(options) {
         options.password
     );
 
-    each(options.headers, function(value, key) {
-        if (key === "Content-Type") {
-            xhr.overrideMimeType(value);
-        }
-        xhr.setRequestHeader(key, value);
-    });
+    if (canSetRequestHeader) {
+        each(options.headers, function(value, key) {
+            if (key === "Content-Type" && canOverrideMimeType) {
+                xhr.overrideMimeType(value);
+            }
+            xhr.setRequestHeader(key, value);
+        });
+    }
 
-    if (!sameOrigin(options.url) && !isFormData) {
+    if (canSetRequestHeader && !sameOrigin(options.url) && !isFormData) {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
 

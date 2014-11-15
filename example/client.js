@@ -16,7 +16,7 @@ request.get("http://localhost:3000").then(
     }
 );
 
-global.uploadObject = function() {
+global.uploadFormData = function() {
     var formData = new FormData(),
         file = new File(["{\"hey\": \"value\"}"], "hey.json", {
             type: "application/json"
@@ -26,17 +26,36 @@ global.uploadObject = function() {
     formData.append("firstName", "Nathan");
     formData.append("lastName", "Faucett");
 
-    console.time("post");
+    console.time("post form data");
     request.post("http://localhost:3000", formData, {
         headers: {
             "Content-Type": null
         }
     }).then(
         function(response) {
-            console.timeEnd("post");
+            console.timeEnd("post form data");
             console.log(response);
         },
         function(response) {
+            console.timeEnd("post form data");
+            console.log(response);
+        }
+    );
+};
+
+global.uploadJSON = function() {
+    var json = {
+        email: "nathanfaucett@gmail.com"
+    };
+
+    console.time("post json");
+    request.post("http://localhost:3000", json).then(
+        function(response) {
+            console.timeEnd("post json");
+            console.log(response);
+        },
+        function(response) {
+            console.timeEnd("post json");
             console.log(response);
         }
     );

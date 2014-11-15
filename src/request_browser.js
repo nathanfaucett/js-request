@@ -1,14 +1,14 @@
 var PolyPromise = require("promise"),
     type = require("type"),
     each = require("each"),
-    urlPath = require("url_path"),
+    //urlPath = require("url_path"),
     utils = require("utils"),
     defaults = require("./defaults");
 
 
 var supoortsFormData = typeof(FormData) !== "undefined",
-    sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
-    sameOrigin_parts = sameOrigin_url.exec(location.href),
+    //sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
+    //sameOrigin_parts = sameOrigin_url.exec(location.href),
     supportsEventListener;
 
 
@@ -28,7 +28,7 @@ defaults.values.XMLHttpRequest = (
 );
 supportsEventListener = type.isNative(defaults.values.XMLHttpRequest.prototype.addEventListener);
 
-
+/*
 function sameOrigin(href) {
     var parts, urlPort, testPort;
 
@@ -50,6 +50,7 @@ function sameOrigin(href) {
         )
     );
 }
+*/
 
 function parseResponseHeaders(responseHeaders) {
     var headers = {},
@@ -192,11 +193,11 @@ function request(options) {
             xhr.setRequestHeader(key, value);
         });
     }
-
+    /*
     if (canSetRequestHeader && !sameOrigin(options.url) && !isFormData) {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
-
+    */
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
     } else {

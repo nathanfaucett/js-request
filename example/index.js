@@ -34,6 +34,8 @@ router.route()
         next();
     })
     .all(function(err, req, res, next) {
+        console.log(req.rawBody);
+
         if (!res.sent) {
             res.statusCode = (res.statusCode < 301 || res.statusCode === 304) ? 404 : res.statusCode;
 

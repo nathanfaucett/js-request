@@ -20,10 +20,9 @@
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
-    "http_error": "git://github.com/nathanfaucett/http_error",
     "methods": "nathanfaucett/methods",
-    "url_path": "git://github.com/nathanfaucett/url_path",
-    "promise": "git://github.com/nathanfaucett/promise",
+    "url_path": "nathanfaucett/url_path",
+    "promise": "nathanfaucett/promise",
     "type": "nathanfaucett/type",
     "each": "nathanfaucett/each",
     "utils": "nathanfaucett/utils"

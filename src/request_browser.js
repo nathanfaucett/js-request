@@ -3,7 +3,8 @@ var PolyPromise = require("promise"),
     each = require("each"),
     //urlPath = require("url_path"),
     utils = require("utils"),
-    defaults = require("./defaults");
+    defaults = require("./defaults"),
+    helpers = require("./helpers");
 
 
 var supoortsFormData = typeof(FormData) !== "undefined",
@@ -52,57 +53,6 @@ function sameOrigin(href) {
 }
 */
 
-function capitalize(str) {
-
-    return str[0].toUpperCase() + str.slice(1);
-}
-
-function camelCaseHeader(str) {
-
-    return each.map(str.split("-"), capitalize).join("-");
-}
-
-function parseResponseHeaders(responseHeaders) {
-    var headers = {},
-        raw = responseHeaders.split("\n");
-
-    each(raw, function(header) {
-        var tmp = header.split(":"),
-            key = tmp[0],
-            value = tmp[1];
-
-        if (key && value) {
-            key = camelCaseHeader(key);
-            value = utils.trim(value);
-
-            if (key === "Content-Length") {
-                value = +value;
-            }
-
-            headers[key] = value;
-        }
-    });
-
-    return headers;
-}
-
-function parseContentType(str) {
-    var index;
-
-    if (str) {
-        if ((index = str.indexOf(";")) !== -1) {
-            str = str.substring(0, index);
-        }
-        if ((index = str.indexOf(",")) !== -1) {
-            return str.substring(0, index);
-        }
-
-        return str;
-    }
-
-    return "application/octet-stream";
-}
-
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
         canSetRequestHeader = type.isFunction(xhr.setRequestHeader),
@@ -143,7 +93,7 @@ function request(options) {
 
         response.statusCode = statusCode;
 
-        response.responseHeaders = xhr.getAllResponseHeaders ? parseResponseHeaders(xhr.getAllResponseHeaders()) : {};
+        response.responseHeaders = xhr.getAllResponseHeaders ? helpers.parseResponseHeaders(xhr.getAllResponseHeaders()) : {};
         response.requestHeaders = options.headers ? utils.copy(options.headers) : {};
 
         response.data = null;
@@ -152,7 +102,7 @@ function request(options) {
             if (options.transformResponse) {
                 response.data = options.transformResponse(responseText);
             } else {
-                if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
+                if (helpers.parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                     try {
                         response.data = JSON.parse(responseText);
                     } catch (e) {

@@ -1,57 +1,11 @@
 var PolyPromise = require("promise"),
     type = require("type"),
-    each = require("each"),
     utils = require("utils"),
     http = require("http"),
     nodeURL = require("url"),
-    defaults = require("./defaults");
+    defaults = require("./defaults"),
+    helpers = require("./helpers");
 
-
-function capitalize(str) {
-
-    return str[0].toUpperCase() + str.slice(1);
-}
-
-function camelCaseHeader(str) {
-
-    return each.map(str.split("-"), capitalize).join("-");
-}
-
-function parseResponseHeaders(responseHeaders) {
-    var headers = {};
-
-    each(responseHeaders, function(value, key) {
-        if (key && value) {
-            key = camelCaseHeader(key);
-            value = utils.trim(value);
-
-            if (key === "Content-Length") {
-                value = +value;
-            }
-
-            headers[key] = value;
-        }
-    });
-
-    return headers;
-}
-
-function parseContentType(str) {
-    var index;
-
-    if (str) {
-        if ((index = str.indexOf(";")) !== -1) {
-            str = str.substring(0, index);
-        }
-        if ((index = str.indexOf(",")) !== -1) {
-            return str.substring(0, index);
-        }
-
-        return str;
-    }
-
-    return "application/octet-stream";
-}
 
 function request(options) {
     var results = "",
@@ -94,7 +48,7 @@ function request(options) {
 
             response.statusCode = statusCode;
 
-            response.responseHeaders = parseResponseHeaders(res.headers);
+            response.responseHeaders = helpers.parseResponseHeadersNode(res.headers);
             response.requestHeaders = options.headers ? utils.copy(options.headers) : {};
 
             response.data = null;
@@ -103,7 +57,7 @@ function request(options) {
                 if (options.transformResponse) {
                     response.data = options.transformResponse(responseText);
                 } else {
-                    if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
+                    if (helpers.parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                         try {
                             response.data = JSON.parse(responseText);
                         } catch (e) {

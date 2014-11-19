@@ -23,7 +23,7 @@ function parseResponseHeaders(responseHeaders) {
     each(responseHeaders, function(value, key) {
         if (key && value) {
             key = camelCaseHeader(key);
-            value = value.trim();
+            value = utils.trim(value);
 
             if (key === "Content-Length") {
                 value = +value;

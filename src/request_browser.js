@@ -52,6 +52,16 @@ function sameOrigin(href) {
 }
 */
 
+function capitalize(str) {
+
+    return str[0].toUpperCase() + str.slice(1);
+}
+
+function camelCaseHeader(str) {
+
+    return each.map(str.split("-"), capitalize).join("-");
+}
+
 function parseResponseHeaders(responseHeaders) {
     var headers = {},
         raw = responseHeaders.split("\n");
@@ -62,6 +72,7 @@ function parseResponseHeaders(responseHeaders) {
             value = tmp[1];
 
         if (key && value) {
+            key = camelCaseHeader(key);
             value = utils.trim(value);
 
             if (key === "Content-Length") {

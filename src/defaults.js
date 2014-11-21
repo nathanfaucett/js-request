@@ -21,6 +21,9 @@ function defaults(options) {
     options.error = type.isFunction(options.error) ? options.error : null;
     options.isPromise = !type.isFunction(options.success) && !type.isFunction(options.error);
 
+    options.user = type.isString(options.user) ? options.user : undefined;
+    options.password = type.isString(options.password) ? options.password : undefined;
+
     return options;
 }
 

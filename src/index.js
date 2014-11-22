@@ -8,6 +8,20 @@ var methods = require("methods"),
 each(methods, function(method) {
     var upper = method.toUpperCase();
 
+    request[method] = function(url, options) {
+        options || (options = {});
+
+        options.url = url;
+        options.method = upper;
+
+        return request(options);
+    };
+});
+request.mSearch = request["m-search"];
+
+each(["post", "patch", "put"], function(method) {
+    var upper = method.toUpperCase();
+
     request[method] = function(url, data, options) {
         options || (options = {});
 
@@ -18,7 +32,6 @@ each(methods, function(method) {
         return request(options);
     };
 });
-request.mSearch = request["m-search"];
 
 request.defaults = defaults.values;
 

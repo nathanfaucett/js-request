@@ -4,23 +4,26 @@ var PolyPromise = require("promise"),
     //urlPath = require("url_path"),
     utils = require("utils"),
     defaults = require("./defaults"),
-    helpers = require("./helpers");
+    helpers = require("./helpers"),
+    environment = require("environment");
 
 
-var supoortsFormData = typeof(FormData) !== "undefined",
+var window = environment.window,
+
+    supportsFormData = typeof(FormData) !== "undefined",
     //sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
     //sameOrigin_parts = sameOrigin_url.exec(location.href),
     supportsEventListener, supportsCors;
 
 
 try {
-    supportsCors = "XMLHttpRequest" in global && "withCredentials" in (new global.XMLHttpRequest());
+    supportsCors = "XMLHttpRequest" in window && "withCredentials" in (new window.XMLHttpRequest());
 } catch (w) {
     supportsCors = false;
 }
 
 defaults.values.XMLHttpRequest = (
-    global.XMLHttpRequest ||
+    window.XMLHttpRequest ||
     function XMLHttpRequest() {
         try {
             return new ActiveXObject("Msxml2.XMLHTTP.6.0");
@@ -72,7 +75,7 @@ function request(options) {
 
     options = defaults(options);
 
-    isFormData = (supoortsFormData && options.data instanceof FormData);
+    isFormData = (supportsFormData && options.data instanceof FormData);
 
     if (options.isPromise) {
         defer = PolyPromise.defer();

@@ -25,6 +25,7 @@
     "promise": "nathanfaucett/promise",
     "type": "nathanfaucett/type",
     "each": "nathanfaucett/each",
-    "utils": "nathanfaucett/utils"
+    "utils": "nathanfaucett/utils",
+    "environment": "nathanfaucett/environment"
   }
 }

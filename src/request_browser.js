@@ -10,8 +10,14 @@ var PolyPromise = require("promise"),
 var supoortsFormData = typeof(FormData) !== "undefined",
     //sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
     //sameOrigin_parts = sameOrigin_url.exec(location.href),
-    supportsEventListener;
+    supportsEventListener, supportsCors;
 
+
+try {
+    supportsCors = "XMLHttpRequest" in global && "withCredentials" in (new global.XMLHttpRequest());
+} catch (w) {
+    supportsCors = false;
+}
 
 defaults.values.XMLHttpRequest = (
     global.XMLHttpRequest ||
@@ -22,11 +28,16 @@ defaults.values.XMLHttpRequest = (
             try {
                 return new ActiveXObject("Msxml2.XMLHTTP.3.0");
             } catch (e2) {
-                throw new Error("XMLHttpRequest is not supported");
+                try {
+                    return new XDomainRequest();
+                } catch (e3) {
+                    throw new Error("XMLHttpRequest is not supported");
+                }
             }
         }
     }
 );
+
 supportsEventListener = type.isNative(defaults.values.XMLHttpRequest.prototype.addEventListener);
 
 /*

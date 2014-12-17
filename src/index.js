@@ -1,8 +1,9 @@
 var methods = require("methods"),
     each = require("each"),
+    environment = require("environment"),
 
     defaults = require("./defaults"),
-    request = process.browser ? require("./request_browser") : require("./request_node");
+    request = environment.browser ? require("./request_browser") : require("./request_node");
 
 
 each(methods, function(method) {

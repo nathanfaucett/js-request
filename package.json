@@ -20,12 +20,16 @@
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
+    "trim": "nathanfaucett/trim",
+    "mixin": "nathanfaucett/mixin",
+    "extend": "nathanfaucett/extend",
+    "is_function": "nathanfaucett/is_function",
+    "is_string": "nathanfaucett/is_string",
     "methods": "nathanfaucett/methods",
     "url_path": "nathanfaucett/url_path",
     "promise": "nathanfaucett/promise",
-    "type": "nathanfaucett/type",
-    "each": "nathanfaucett/each",
-    "utils": "nathanfaucett/utils",
+    "for_each": "nathanfaucett/for_each",
+    "map": "nathanfaucett/map",
     "environment": "nathanfaucett/environment"
   }
 }

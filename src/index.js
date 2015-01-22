@@ -1,12 +1,12 @@
 var methods = require("methods"),
-    each = require("each"),
+    forEach = require("for_each"),
     environment = require("environment"),
 
     defaults = require("./defaults"),
     request = environment.browser ? require("./request_browser") : require("./request_node");
 
 
-each(methods, function(method) {
+forEach(methods, function(method) {
     var upper = method.toUpperCase();
 
     request[method] = function(url, options) {
@@ -20,7 +20,7 @@ each(methods, function(method) {
 });
 request.mSearch = request["m-search"];
 
-each(["post", "patch", "put"], function(method) {
+forEach(["post", "patch", "put"], function(method) {
     var upper = method.toUpperCase();
 
     request[method] = function(url, data, options) {

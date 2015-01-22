@@ -1,5 +1,4 @@
-var each = require("each"),
-    utils = require("utils");
+var map = require("map");
 
 
 var helpers = module.exports;
@@ -10,52 +9,9 @@ function capitalize(str) {
     return str[0].toUpperCase() + str.slice(1);
 }
 
-function camelCaseHeader(str) {
+helpers.camelCaseHeader = function(str) {
 
-    return each.map(str.split("-"), capitalize).join("-");
-}
-
-helpers.parseResponseHeadersNode = function(responseHeaders) {
-    var headers = {};
-
-    each(responseHeaders, function(value, key) {
-        if (key && value) {
-            key = camelCaseHeader(key);
-            value = utils.trim(value);
-
-            if (key === "Content-Length") {
-                value = +value;
-            }
-
-            headers[key] = value;
-        }
-    });
-
-    return headers;
-};
-
-helpers.parseResponseHeaders = function(responseHeaders) {
-    var headers = {},
-        raw = responseHeaders.split("\n");
-
-    each(raw, function(header) {
-        var tmp = header.split(":"),
-            key = tmp[0],
-            value = tmp[1];
-
-        if (key && value) {
-            key = camelCaseHeader(key);
-            value = utils.trim(value);
-
-            if (key === "Content-Length") {
-                value = +value;
-            }
-
-            headers[key] = value;
-        }
-    });
-
-    return headers;
+    return map(str.split("-"), capitalize).join("-");
 };
 
 helpers.parseContentType = function(str) {

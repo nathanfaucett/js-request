@@ -1,10 +1,33 @@
 var PolyPromise = require("promise"),
-    type = require("type"),
-    utils = require("utils"),
+    isString = require("is_string"),
+    extend = require("extend"),
     http = require("http"),
-    nodeURL = require("url"),
+    url = require("url"),
+    forEach = require("for_each"),
+    trim = require("trim"),
     defaults = require("./defaults"),
     helpers = require("./helpers");
+
+
+function parseResponseHeadersNode(responseHeaders) {
+    var camelCaseHeader = helpers.camelCaseHeader,
+        headers = {};
+
+    forEach(responseHeaders, function(value, key) {
+        if (key && value) {
+            key = camelCaseHeader(key);
+            value = trim(value);
+
+            if (key === "Content-Length") {
+                value = +value;
+            }
+
+            headers[key] = value;
+        }
+    });
+
+    return headers;
+}
 
 
 function request(options) {
@@ -48,8 +71,8 @@ function request(options) {
 
             response.statusCode = statusCode;
 
-            response.responseHeaders = helpers.parseResponseHeadersNode(res.headers);
-            response.requestHeaders = options.headers ? utils.copy(options.headers) : {};
+            response.responseHeaders = parseResponseHeadersNode(res.headers);
+            response.requestHeaders = options.headers ? extend({}, options.headers) : {};
 
             response.data = null;
 
@@ -79,7 +102,7 @@ function request(options) {
         });
     }
 
-    fullUrl = nodeURL.parse(options.url);
+    fullUrl = url.parse(options.url);
     nodeOptions = {
         hostname: fullUrl.hostname,
         port: fullUrl.port || 80,
@@ -93,7 +116,7 @@ function request(options) {
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
     } else {
-        if (!type.isString(options.data)) {
+        if (!isString(options.data)) {
             if (options.headers["Content-Type"] === "application/json") {
                 options.data = JSON.stringify(options.data);
             } else {

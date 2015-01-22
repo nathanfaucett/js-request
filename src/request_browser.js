@@ -1,26 +1,21 @@
 var PolyPromise = require("promise"),
-    type = require("type"),
-    each = require("each"),
+    isFunction = require("is_function"),
+    isString = require("is_string"),
+    forEach = require("for_each"),
+    trim = require("trim"),
     //urlPath = require("url_path"),
-    utils = require("utils"),
+    extend = require("extend"),
     defaults = require("./defaults"),
     helpers = require("./helpers"),
     environment = require("environment");
 
 
 var window = environment.window,
+    supportsFormData = typeof(FormData) !== "undefined";
 
-    supportsFormData = typeof(FormData) !== "undefined",
-    //sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
-    //sameOrigin_parts = sameOrigin_url.exec(location.href),
-    supportsEventListener, supportsCors;
+//sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
+//sameOrigin_parts = sameOrigin_url.exec(location.href);
 
-
-try {
-    supportsCors = "XMLHttpRequest" in window && "withCredentials" in (new window.XMLHttpRequest());
-} catch (w) {
-    supportsCors = false;
-}
 
 defaults.values.XMLHttpRequest = (
     window.XMLHttpRequest ||
@@ -40,8 +35,6 @@ defaults.values.XMLHttpRequest = (
         }
     }
 );
-
-supportsEventListener = type.isNative(defaults.values.XMLHttpRequest.prototype.addEventListener);
 
 /*
 function sameOrigin(href) {
@@ -67,10 +60,36 @@ function sameOrigin(href) {
 }
 */
 
+function parseResponseHeaders(responseHeaders) {
+    var camelCaseHeader = helpers.camelCaseHeader,
+        headers = {},
+        raw = responseHeaders.split("\n");
+
+    forEach(raw, function(header) {
+        var tmp = header.split(":"),
+            key = tmp[0],
+            value = tmp[1];
+
+        if (key && value) {
+            key = camelCaseHeader(key);
+            value = trim(value);
+
+            if (key === "Content-Length") {
+                value = +value;
+            }
+
+            headers[key] = value;
+        }
+    });
+
+    return headers;
+}
+
+
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
-        canSetRequestHeader = type.isFunction(xhr.setRequestHeader),
-        canOverrideMimeType = type.isFunction(xhr.overrideMimeType),
+        canSetRequestHeader = isFunction(xhr.setRequestHeader),
+        canOverrideMimeType = isFunction(xhr.overrideMimeType),
         isFormData, defer;
 
     options = defaults(options);
@@ -107,8 +126,8 @@ function request(options) {
 
         response.statusCode = statusCode;
 
-        response.responseHeaders = xhr.getAllResponseHeaders ? helpers.parseResponseHeaders(xhr.getAllResponseHeaders()) : {};
-        response.requestHeaders = options.headers ? utils.copy(options.headers) : {};
+        response.responseHeaders = xhr.getAllResponseHeaders ? parseResponseHeaders(xhr.getAllResponseHeaders()) : {};
+        response.requestHeaders = options.headers ? extend({}, options.headers) : {};
 
         response.data = null;
 
@@ -137,9 +156,12 @@ function request(options) {
         }
     }
 
-    if (supportsEventListener) {
+    if (isFunction(xhr.addEventListener)) {
         xhr.addEventListener("load", oncomplete, false);
         xhr.addEventListener("error", oncomplete, false);
+    } else if (isFunction(xhr.attachEvent)) {
+        xhr.attachEvent("onload", oncomplete);
+        xhr.attachEvent("onerror", oncomplete);
     } else {
         xhr.onreadystatechange = function onreadystatechange() {
             if (+xhr.readyState === 4) {
@@ -161,7 +183,7 @@ function request(options) {
     );
 
     if (canSetRequestHeader) {
-        each(options.headers, function(value, key) {
+        forEach(options.headers, function(value, key) {
             if (key === "Content-Type" && canOverrideMimeType) {
                 xhr.overrideMimeType(value);
             }
@@ -176,7 +198,7 @@ function request(options) {
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
     } else {
-        if (!type.isString(options.data) && !isFormData) {
+        if (!isString(options.data) && !isFormData) {
             if (options.headers["Content-Type"] === "application/json") {
                 options.data = JSON.stringify(options.data);
             } else {

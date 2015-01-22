@@ -1,4 +1,4 @@
-var PolyPromise = require("promise"),
+var PromisePolyfill = require("promise_polyfill"),
     isFunction = require("is_function"),
     isString = require("is_string"),
     forEach = require("for_each"),
@@ -97,7 +97,7 @@ function request(options) {
     isFormData = (supportsFormData && options.data instanceof FormData);
 
     if (options.isPromise) {
-        defer = PolyPromise.defer();
+        defer = PromisePolyfill.defer();
     }
 
     function onsuccess(response) {

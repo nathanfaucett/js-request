@@ -1,4 +1,4 @@
-var PolyPromise = require("promise"),
+var PromisePolyfill = require("promise_polyfill"),
     isString = require("is_string"),
     extend = require("extend"),
     http = require("http"),
@@ -37,7 +37,7 @@ function request(options) {
     options = defaults(options);
 
     if (options.isPromise) {
-        defer = PolyPromise.defer();
+        defer = PromisePolyfill.defer();
     }
 
     function onsuccess(response) {

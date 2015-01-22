@@ -27,7 +27,7 @@
     "is_string": "nathanfaucett/is_string",
     "methods": "nathanfaucett/methods",
     "url_path": "nathanfaucett/url_path",
-    "promise": "nathanfaucett/promise",
+    "promise_polyfill": "nathanfaucett/promise_polyfill",
     "for_each": "nathanfaucett/for_each",
     "map": "nathanfaucett/map",
     "environment": "nathanfaucett/environment"

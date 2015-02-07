@@ -3,7 +3,6 @@ var PromisePolyfill = require("promise_polyfill"),
     isString = require("is_string"),
     forEach = require("for_each"),
     trim = require("trim"),
-    //urlPath = require("url_path"),
     extend = require("extend"),
     defaults = require("./defaults"),
     helpers = require("./helpers"),
@@ -12,9 +11,6 @@ var PromisePolyfill = require("promise_polyfill"),
 
 var window = environment.window,
     supportsFormData = typeof(FormData) !== "undefined";
-
-//sameOrigin_url = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
-//sameOrigin_parts = sameOrigin_url.exec(location.href);
 
 
 defaults.values.XMLHttpRequest = (
@@ -35,30 +31,6 @@ defaults.values.XMLHttpRequest = (
         }
     }
 );
-
-/*
-function sameOrigin(href) {
-    var parts, urlPort, testPort;
-
-    if (!urlPath.isAbsoluteURL(href)) return true;
-
-    parts = sameOrigin_url.exec(href.toLowerCase());
-
-    if (!parts) return false;
-
-    urlPort = sameOrigin_parts[3];
-    testPort = parts[3];
-
-    return !(
-        (parts[1] !== sameOrigin_parts[1]) ||
-        (parts[2] !== sameOrigin_parts[2]) || !(
-            (testPort === urlPort) ||
-            (!testPort && (urlPort === "80" || urlPort === "443")) ||
-            (!urlPort && (testPort === "80" || testPort === "443"))
-        )
-    );
-}
-*/
 
 function parseResponseHeaders(responseHeaders) {
     var camelCaseHeader = helpers.camelCaseHeader,
@@ -190,11 +162,7 @@ function request(options) {
             xhr.setRequestHeader(key, value);
         });
     }
-    /*
-    if (canSetRequestHeader && !sameOrigin(options.url) && !isFormData) {
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    }
-    */
+
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
     } else {

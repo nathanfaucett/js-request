@@ -5,7 +5,11 @@ request.defaults.headers["Content-Type"] = "application/json";
 
 
 console.time("get");
-request.get("http://localhost:3000").then(
+request.get("http://localhost:3000", {
+    headers: {
+        "X-TEST_TEST": "ABCDEFG"
+    }
+}).then(
     function(response) {
         console.timeEnd("get");
         console.log(response);

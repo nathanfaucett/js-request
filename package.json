@@ -20,6 +20,7 @@
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
+    "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill",
     "trim": "nathanfaucett/trim",
     "mixin": "nathanfaucett/mixin",
     "extend": "nathanfaucett/extend",

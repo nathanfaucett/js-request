@@ -1,7 +1,7 @@
 var map = require("map");
 
 
-var helpers = module.exports;
+var helpers = exports;
 
 
 function capitalize(str) {

@@ -1,36 +1,19 @@
 var PromisePolyfill = require("promise_polyfill"),
+    XMLHttpRequestPolyfill = require("xmlhttprequest_polyfill"),
     isFunction = require("is_function"),
     isString = require("is_string"),
     forEach = require("for_each"),
     trim = require("trim"),
     extend = require("extend"),
     defaults = require("./defaults"),
-    helpers = require("./helpers"),
-    environment = require("environment");
+    helpers = require("./helpers");
 
 
-var window = environment.window,
-    supportsFormData = typeof(FormData) !== "undefined";
+var supportsFormData = typeof(FormData) !== "undefined";
 
 
-defaults.values.XMLHttpRequest = (
-    window.XMLHttpRequest ||
-    function XMLHttpRequest() {
-        try {
-            return new ActiveXObject("Msxml2.XMLHTTP.6.0");
-        } catch (e1) {
-            try {
-                return new ActiveXObject("Msxml2.XMLHTTP.3.0");
-            } catch (e2) {
-                try {
-                    return new XDomainRequest();
-                } catch (e3) {
-                    throw new Error("XMLHttpRequest is not supported");
-                }
-            }
-        }
-    }
-);
+defaults.values.XMLHttpRequest = XMLHttpRequestPolyfill;
+
 
 function parseResponseHeaders(responseHeaders) {
     var camelCaseHeader = helpers.camelCaseHeader,
@@ -76,7 +59,9 @@ function request(options) {
         if (options.isPromise) {
             defer.resolve(response);
         } else {
-            options.success && options.success(response);
+            if (options.success) {
+                options.success(response);
+            }
         }
     }
 
@@ -84,7 +69,9 @@ function request(options) {
         if (options.isPromise) {
             defer.reject(response);
         } else {
-            options.error && options.error(response);
+            if (options.error) {
+                options.error(response);
+            }
         }
     }
 

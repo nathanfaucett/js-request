@@ -15,7 +15,7 @@ function defaults(options) {
     options.transformResponse = isFunction(options.transformResponse) ? options.transformResponse : null;
 
     options.withCredentials = options.withCredentials != null ? !!options.withCredentials : false;
-    options.headers = mixin({}, options.headers);
+    options.headers = mixin({}, defaults.values.headers, options.headers);
     options.async = options.async != null ? !!options.async : true;
 
     options.success = isFunction(options.success) ? options.success : null;

@@ -32,31 +32,56 @@ function parseResponseHeadersNode(responseHeaders) {
 
 function request(options) {
     var results = "",
-        defer, fullUrl, nodeOptions, req;
+        plugins = request.plugins,
+        fullUrl, nodeOptions, req, defer;
 
     options = defaults(options);
+
+    fullUrl = url.parse(options.url);
+    nodeOptions = {
+        hostname: fullUrl.hostname,
+        port: fullUrl.port || 80,
+        path: fullUrl.pathname,
+        method: options.method,
+        auth: (options.user && options.password) ? options.user + ":" + options.password : null,
+        agent: options.agent,
+        headers: options.headers
+    };
+    req = http.request(nodeOptions);
+
+    plugins.emit("before", req, options);
 
     if (options.isPromise) {
         defer = PromisePolyfill.defer();
     }
 
-    function onsuccess(response) {
+    function onSuccess(response) {
+        plugins.emit("response", response, req, options);
+        plugins.emit("load", response, req, options);
+
         if (options.isPromise) {
             defer.resolve(response);
         } else {
-            options.success && options.success(response);
+            if (options.success) {
+                options.success(response);
+            }
         }
     }
 
-    function onerror(response) {
+    function onError(response) {
+        plugins.emit("response", response, req, options);
+        plugins.emit("error", response, req, options);
+
         if (options.isPromise) {
             defer.reject(response);
         } else {
-            options.error && options.error(response);
+            if (options.error) {
+                options.error(response);
+            }
         }
     }
 
-    function oncomplete(res) {
+    function onComplete(res) {
         res.on("data", function ondata(chunk) {
             results += chunk;
         });
@@ -85,7 +110,7 @@ function request(options) {
                             response.data = JSON.parse(responseText);
                         } catch (e) {
                             response.data = e;
-                            onerror(response);
+                            onError(response);
                             return;
                         }
                     } else if (responseText) {
@@ -95,23 +120,12 @@ function request(options) {
             }
 
             if ((statusCode > 199 && statusCode < 301) || statusCode === 304) {
-                onsuccess(response);
+                onSuccess(response);
             } else {
-                onerror(response);
+                onError(response);
             }
         });
     }
-
-    fullUrl = url.parse(options.url);
-    nodeOptions = {
-        hostname: fullUrl.hostname,
-        port: fullUrl.port || 80,
-        path: fullUrl.pathname,
-        method: options.method,
-        auth: (options.user && options.password) ? options.user + ":" + options.password : null,
-        agent: options.agent,
-        headers: options.headers
-    };
 
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
@@ -125,12 +139,11 @@ function request(options) {
         }
     }
 
-    req = http.request(nodeOptions);
-
-    req.on("response", oncomplete);
-    req.on("error", oncomplete);
+    req.on("response", onComplete);
+    req.on("error", onComplete);
 
     req.end(options.data);
+    plugins.emit("request", req, options);
 
     return defer ? defer.promise : undefined;
 }

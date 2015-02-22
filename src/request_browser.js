@@ -43,19 +43,24 @@ function parseResponseHeaders(responseHeaders) {
 
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
+        plugins = request.plugins,
         canSetRequestHeader = isFunction(xhr.setRequestHeader),
         canOverrideMimeType = isFunction(xhr.overrideMimeType),
         isFormData, defer;
 
     options = defaults(options);
 
-    isFormData = (supportsFormData && options.data instanceof FormData);
+    plugins.emit("before", xhr, options);
 
+    isFormData = (supportsFormData && options.data instanceof FormData);
     if (options.isPromise) {
         defer = PromisePolyfill.defer();
     }
 
-    function onsuccess(response) {
+    function onSuccess(response) {
+        plugins.emit("response", response, xhr, options);
+        plugins.emit("load", response, xhr, options);
+
         if (options.isPromise) {
             defer.resolve(response);
         } else {
@@ -65,7 +70,10 @@ function request(options) {
         }
     }
 
-    function onerror(response) {
+    function onError(response) {
+        plugins.emit("response", response, xhr, options);
+        plugins.emit("error", response, xhr, options);
+
         if (options.isPromise) {
             defer.reject(response);
         } else {
@@ -75,7 +83,7 @@ function request(options) {
         }
     }
 
-    function oncomplete() {
+    function onComplete() {
         var statusCode = +xhr.status,
             responseText = xhr.responseText,
             response = {};
@@ -99,7 +107,7 @@ function request(options) {
                         response.data = JSON.parse(responseText);
                     } catch (e) {
                         response.data = e;
-                        onerror(response);
+                        onError(response);
                         return;
                     }
                 } else if (responseText) {
@@ -109,24 +117,29 @@ function request(options) {
         }
 
         if ((statusCode > 199 && statusCode < 301) || statusCode === 304) {
-            onsuccess(response);
+            onSuccess(response);
         } else {
-            onerror(response);
+            onError(response);
+        }
+    }
+
+    function onReadyStateChange() {
+        switch (+xhr.readyState) {
+            case 1:
+                plugins.emit("request", xhr, options);
+                break;
+            case 4:
+                onComplete();
+                break;
         }
     }
 
     if (isFunction(xhr.addEventListener)) {
-        xhr.addEventListener("load", oncomplete, false);
-        xhr.addEventListener("error", oncomplete, false);
+        xhr.addEventListener("readystatechange", onReadyStateChange, false);
     } else if (isFunction(xhr.attachEvent)) {
-        xhr.attachEvent("onload", oncomplete);
-        xhr.attachEvent("onerror", oncomplete);
+        xhr.attachEvent("onreadystatechange", onReadyStateChange);
     } else {
-        xhr.onreadystatechange = function onreadystatechange() {
-            if (+xhr.readyState === 4) {
-                oncomplete();
-            }
-        };
+        xhr.onreadystatechange = onReadyStateChange;
     }
 
     if (options.withCredentials && options.async) {

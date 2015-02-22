@@ -7,6 +7,7 @@
     "url": "https://github.com/nathanfaucett/request.git"
   },
   "main": "src/index.js",
+  "browser": "src/browser.js",
   "keywords": [
     "request",
     "request.js"
@@ -20,17 +21,18 @@
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
-    "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill",
-    "trim": "nathanfaucett/trim",
-    "mixin": "nathanfaucett/mixin",
+    "environment": "nathanfaucett/environment",
+    "event_emitter": "git://github.com/nathanfaucett/event_emitter",
     "extend": "nathanfaucett/extend",
+    "for_each": "nathanfaucett/for_each",
     "is_function": "nathanfaucett/is_function",
     "is_string": "nathanfaucett/is_string",
-    "methods": "nathanfaucett/methods",
-    "url_path": "nathanfaucett/url_path",
-    "promise_polyfill": "nathanfaucett/promise_polyfill",
-    "for_each": "nathanfaucett/for_each",
     "map": "nathanfaucett/map",
-    "environment": "nathanfaucett/environment"
+    "methods": "nathanfaucett/methods",
+    "mixin": "nathanfaucett/mixin",
+    "promise_polyfill": "nathanfaucett/promise_polyfill",
+    "trim": "nathanfaucett/trim",
+    "url_path": "nathanfaucett/url_path",
+    "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill"
   }
 }

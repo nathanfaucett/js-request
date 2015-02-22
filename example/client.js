@@ -1,8 +1,20 @@
-global.request = require("../src/index.js");
+var request = global.request = require("../src/browser");
 
 //request.defaults.withCredentials = true;
 request.defaults.headers["Content-Type"] = "application/json";
 
+request.plugins.on("before", function( /* nativeRequest, options */ ) {
+
+});
+
+request.plugins.on("request", function( /* nativeRequest, options */ ) {
+
+});
+
+// error and success same arguments
+request.plugins.on("response", function( /* response, nativeRequest, options */ ) {
+
+});
 
 console.time("get");
 request.get("http://localhost:3000", {

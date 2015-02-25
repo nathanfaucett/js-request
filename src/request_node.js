@@ -82,8 +82,6 @@ function request(options) {
     }
 
     function onComplete(res) {
-        console.log(arguments);
-
         res.on("data", function ondata(chunk) {
             results += chunk;
         });

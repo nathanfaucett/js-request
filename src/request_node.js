@@ -82,6 +82,8 @@ function request(options) {
     }
 
     function onComplete(res) {
+        console.log(arguments);
+
         res.on("data", function ondata(chunk) {
             results += chunk;
         });
@@ -127,6 +129,22 @@ function request(options) {
         });
     }
 
+    function onCompleteError(error) {
+        var response = {};
+
+        response.url = options.url;
+        response.method = options.method;
+
+        response.statusCode = 0;
+
+        response.responseHeaders = {};
+        response.requestHeaders = options.headers ? extend({}, options.headers) : {};
+
+        response.data = error;
+
+        onError(response);
+    }
+
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
     } else {
@@ -140,7 +158,7 @@ function request(options) {
     }
 
     req.on("response", onComplete);
-    req.on("error", onComplete);
+    req.on("error", onCompleteError);
 
     req.end(options.data);
     plugins.emit("request", req, options);

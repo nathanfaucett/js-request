@@ -33,6 +33,7 @@
     "promise_polyfill": "nathanfaucett/promise_polyfill",
     "trim": "nathanfaucett/trim",
     "url_path": "nathanfaucett/url_path",
+    "urls": "git://github.com/nathanfaucett/urls",
     "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill"
   }
 }

@@ -2,7 +2,7 @@ var PromisePolyfill = require("promise_polyfill"),
     isString = require("is_string"),
     extend = require("extend"),
     http = require("http"),
-    url = require("url"),
+    urls = require("urls"),
     forEach = require("for_each"),
     trim = require("trim"),
     defaults = require("./defaults"),
@@ -37,11 +37,11 @@ function request(options) {
 
     options = defaults(options);
 
-    fullUrl = url.parse(options.url);
+    fullUrl = urls.parse(options.url);
     nodeOptions = {
         hostname: fullUrl.hostname,
         port: fullUrl.port || 80,
-        path: fullUrl.pathname,
+        path: fullUrl.path,
         method: options.method,
         auth: (options.user && options.password) ? options.user + ":" + options.password : null,
         agent: options.agent,
@@ -91,7 +91,7 @@ function request(options) {
                 response = {},
                 responseText = results;
 
-            response.url = options.url;
+            response.url = fullUrl.href;
             response.method = options.method;
 
             response.statusCode = statusCode;
@@ -130,7 +130,7 @@ function request(options) {
     function onCompleteError(error) {
         var response = {};
 
-        response.url = options.url;
+        response.url = fullUrl.href;
         response.method = options.method;
 
         response.statusCode = 0;

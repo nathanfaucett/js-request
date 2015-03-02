@@ -12,6 +12,9 @@
     "request",
     "request.js"
   ],
+  "scripts": {
+    "test": "comn -f example/client.js -o example/client.min.js"
+  },
   "author": "Nathan Faucett",
   "license": "BSD-2-Clause",
   "readmeFilename": "README.md",
@@ -29,7 +32,6 @@
     "is_string": "nathanfaucett/is_string",
     "map": "nathanfaucett/map",
     "methods": "nathanfaucett/methods",
-    "mixin": "nathanfaucett/mixin",
     "promise_polyfill": "nathanfaucett/promise_polyfill",
     "trim": "nathanfaucett/trim",
     "url_path": "nathanfaucett/url_path",

@@ -1,10 +1,10 @@
-var mixin = require("mixin"),
+var extend = require("extend"),
     isString = require("is_string"),
     isFunction = require("is_function");
 
 
 function defaults(options) {
-    options = mixin({}, options, defaults.values);
+    options = extend({}, defaults.values, options);
 
     options.url = isString(options.url || (options.url = options.src)) ? options.url : null;
     options.method = isString(options.method) ? options.method.toUpperCase() : "GET";
@@ -15,7 +15,7 @@ function defaults(options) {
     options.transformResponse = isFunction(options.transformResponse) ? options.transformResponse : null;
 
     options.withCredentials = options.withCredentials != null ? !!options.withCredentials : false;
-    options.headers = mixin({}, defaults.values.headers, options.headers);
+    options.headers = extend({}, defaults.values.headers, options.headers);
     options.async = options.async != null ? !!options.async : true;
 
     options.success = isFunction(options.success) ? options.success : null;

@@ -41,6 +41,17 @@ function parseResponseHeaders(responseHeaders) {
 }
 
 
+function addEventListener(xhr, event, listener) {
+    if (isFunction(xhr.addEventListener)) {
+        xhr.addEventListener(event, listener, false);
+    } else if (isFunction(xhr.attachEvent)) {
+        xhr.attachEvent("on" + event, listener);
+    } else {
+        xhr["on" + event] = listener;
+    }
+}
+
+
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
         plugins = request.plugins,
@@ -53,6 +64,7 @@ function request(options) {
     plugins.emit("before", xhr, options);
 
     isFormData = (supportsFormData && options.data instanceof FormData);
+
     if (options.isPromise) {
         defer = PromisePolyfill.defer();
     }
@@ -134,13 +146,7 @@ function request(options) {
         }
     }
 
-    if (isFunction(xhr.addEventListener)) {
-        xhr.addEventListener("readystatechange", onReadyStateChange, false);
-    } else if (isFunction(xhr.attachEvent)) {
-        xhr.attachEvent("onreadystatechange", onReadyStateChange);
-    } else {
-        xhr.onreadystatechange = onReadyStateChange;
-    }
+    addEventListener(xhr, "readystatechange", onReadyStateChange);
 
     if (options.withCredentials && options.async) {
         xhr.withCredentials = options.withCredentials;

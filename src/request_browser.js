@@ -5,8 +5,10 @@ var PromisePolyfill = require("promise_polyfill"),
     forEach = require("for_each"),
     trim = require("trim"),
     extend = require("extend"),
+    Response = require("./response"),
     defaults = require("./defaults"),
-    helpers = require("./helpers");
+    camelcaseHeader = require("./camelcase_header"),
+    parseContentType = require("./parse_content_type");
 
 
 var supportsFormData = typeof(FormData) !== "undefined";
@@ -16,8 +18,7 @@ defaults.values.XMLHttpRequest = XMLHttpRequestPolyfill;
 
 
 function parseResponseHeaders(responseHeaders) {
-    var camelCaseHeader = helpers.camelCaseHeader,
-        headers = {},
+    var headers = {},
         raw = responseHeaders.split("\n");
 
     forEach(raw, function(header) {
@@ -26,7 +27,7 @@ function parseResponseHeaders(responseHeaders) {
             value = tmp[1];
 
         if (key && value) {
-            key = camelCaseHeader(key);
+            key = camelcaseHeader(key);
             value = trim(value);
 
             if (key === "Content-Length") {
@@ -50,7 +51,6 @@ function addEventListener(xhr, event, listener) {
         xhr["on" + event] = listener;
     }
 }
-
 
 function request(options) {
     var xhr = new defaults.values.XMLHttpRequest(),
@@ -98,7 +98,7 @@ function request(options) {
     function onComplete() {
         var statusCode = +xhr.status,
             responseText = xhr.responseText,
-            response = {};
+            response = new Response();
 
         response.url = xhr.responseURL || options.url;
         response.method = options.method;
@@ -114,7 +114,7 @@ function request(options) {
             if (options.transformResponse) {
                 response.data = options.transformResponse(responseText);
             } else {
-                if (helpers.parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
+                if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                     try {
                         response.data = JSON.parse(responseText);
                     } catch (e) {
@@ -162,10 +162,12 @@ function request(options) {
 
     if (canSetRequestHeader) {
         forEach(options.headers, function(value, key) {
-            if (key === "Content-Type" && canOverrideMimeType) {
-                xhr.overrideMimeType(value);
+            if (isString(value)) {
+                if (key === "Content-Type" && canOverrideMimeType) {
+                    xhr.overrideMimeType(value);
+                }
+                xhr.setRequestHeader(key, value);
             }
-            xhr.setRequestHeader(key, value);
         });
     }
 

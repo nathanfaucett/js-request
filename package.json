@@ -24,18 +24,18 @@
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
-    "environment": "nathanfaucett/environment",
-    "event_emitter": "git://github.com/nathanfaucett/event_emitter",
+    "capitalize_string": "nathanfaucett/capitalize_string",
+    "event_emitter": "nathanfaucett/event_emitter",
     "extend": "nathanfaucett/extend",
+    "filter": "git://github.com/nathanfaucett/filter",
     "for_each": "nathanfaucett/for_each",
     "is_function": "nathanfaucett/is_function",
     "is_string": "nathanfaucett/is_string",
-    "map": "nathanfaucett/map",
+    "map": "git://github.com/nathanfaucett/map",
     "methods": "nathanfaucett/methods",
     "promise_polyfill": "nathanfaucett/promise_polyfill",
     "trim": "nathanfaucett/trim",
-    "url_path": "nathanfaucett/url_path",
-    "urls": "git://github.com/nathanfaucett/urls",
+    "urls": "nathanfaucett/urls",
     "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill"
   }
 }

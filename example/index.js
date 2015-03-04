@@ -24,18 +24,10 @@ router.route()
         next();
     })
     .post(function(req, res, next) {
-
-        res.json(req.body);
-        next();
-    })
-    .patch(function(req, res, next) {
-
         res.json(req.body);
         next();
     })
     .all(function(err, req, res, next) {
-        console.log(req.rawBody);
-
         if (!res.sent) {
             res.statusCode = (res.statusCode < 301 || res.statusCode === 304) ? 404 : res.statusCode;
 

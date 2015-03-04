@@ -4,18 +4,20 @@ var PromisePolyfill = require("promise_polyfill"),
     http = require("http"),
     urls = require("urls"),
     forEach = require("for_each"),
+    filter = require("filter"),
     trim = require("trim"),
+    Response = require("./response"),
     defaults = require("./defaults"),
-    helpers = require("./helpers");
+    camelcaseHeader = require("./camelcase_header"),
+    parseContentType = require("./parse_content_type");
 
 
 function parseResponseHeadersNode(responseHeaders) {
-    var camelCaseHeader = helpers.camelCaseHeader,
-        headers = {};
+    var headers = {};
 
     forEach(responseHeaders, function(value, key) {
         if (key && value) {
-            key = camelCaseHeader(key);
+            key = camelcaseHeader(key);
             value = trim(value);
 
             if (key === "Content-Length") {
@@ -45,7 +47,7 @@ function request(options) {
         method: options.method,
         auth: (options.user && options.password) ? options.user + ":" + options.password : null,
         agent: options.agent,
-        headers: options.headers
+        headers: filter(options.headers, isString)
     };
     req = http.request(nodeOptions);
 
@@ -88,7 +90,7 @@ function request(options) {
 
         res.on("end", function onload() {
             var statusCode = +res.statusCode,
-                response = {},
+                response = new Response(),
                 responseText = results;
 
             response.url = fullUrl.href;
@@ -105,7 +107,7 @@ function request(options) {
                 if (options.transformResponse) {
                     response.data = options.transformResponse(responseText);
                 } else {
-                    if (helpers.parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
+                    if (parseContentType(response.responseHeaders["Content-Type"]) === "application/json") {
                         try {
                             response.data = JSON.parse(responseText);
                         } catch (e) {

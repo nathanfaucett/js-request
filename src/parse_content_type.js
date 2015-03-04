@@ -1,20 +1,4 @@
-var map = require("map");
-
-
-var helpers = exports;
-
-
-function capitalize(str) {
-
-    return str[0].toUpperCase() + str.slice(1);
-}
-
-helpers.camelCaseHeader = function(str) {
-
-    return map(str.split("-"), capitalize).join("-");
-};
-
-helpers.parseContentType = function(str) {
+module.exports = function parseContentType(str) {
     var index;
 
     if (str) {

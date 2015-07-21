@@ -13,7 +13,7 @@
     "request.js"
   ],
   "scripts": {
-    "test": "comn -f example/client.js -o example/client.min.js"
+    "example": "comn -f example/client.js -o example/client.min.js"
   },
   "author": "Nathan Faucett",
   "license": "BSD-2-Clause",
@@ -24,18 +24,18 @@
     "grunt-jsbeautifier": ""
   },
   "dependencies": {
-    "capitalize_string": "nathanfaucett/capitalize_string",
-    "event_emitter": "nathanfaucett/event_emitter",
-    "extend": "nathanfaucett/extend",
-    "filter": "git://github.com/nathanfaucett/filter",
-    "for_each": "nathanfaucett/for_each",
-    "is_function": "nathanfaucett/is_function",
-    "is_string": "nathanfaucett/is_string",
-    "map": "git://github.com/nathanfaucett/map",
-    "methods": "nathanfaucett/methods",
-    "promise_polyfill": "nathanfaucett/promise_polyfill",
-    "trim": "nathanfaucett/trim",
-    "urls": "nathanfaucett/urls",
-    "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill"
+    "capitalize_string": "git://github.com/nathanfaucett/capitalize_string.git",
+    "event_emitter": "git://github.com/nathanfaucett/event_emitter.git",
+    "extend": "git://github.com/nathanfaucett/extend.git",
+    "filter": "git://github.com/nathanfaucett/filter.git",
+    "for_each": "git://github.com/nathanfaucett/for_each.git",
+    "is_function": "git://github.com/nathanfaucett/is_function.git",
+    "is_string": "git://github.com/nathanfaucett/is_string.git",
+    "map": "git://github.com/nathanfaucett/map.git",
+    "methods": "git://github.com/nathanfaucett/methods.git",
+    "promise_polyfill": "git://github.com/nathanfaucett/promise_polyfill.git",
+    "trim": "git://github.com/nathanfaucett/trim.git",
+    "urls": "git://github.com/nathanfaucett/urls.git",
+    "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill.git"
   }
 }

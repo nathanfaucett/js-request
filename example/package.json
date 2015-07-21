@@ -2,10 +2,10 @@
   "name": "test",
   "version": "0.0.1",
   "dependencies": {
-    "cors": "nathanfaucett/cors",
-    "body_parser": "nathanfaucett/body_parser",
-    "layers": "nathanfaucett/layers",
-    "context": "nathanfaucett/context"
+    "cors": "git://github.com/nathanfaucett/cors.git",
+    "body_parser": "git://github.com/nathanfaucett/body_parser.git",
+    "layers": "git://github.com/nathanfaucett/layers.git",
+    "ri": "git://github.com/nathanfaucett/ri.git"
   }
 }
 

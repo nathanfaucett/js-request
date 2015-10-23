@@ -3,7 +3,7 @@ var PromisePolyfill = require("promise_polyfill"),
     extend = require("extend"),
     http = require("http"),
     urls = require("urls"),
-    forEach = require("for_each"),
+    objectForEach = require("object-for_each"),
     filter = require("filter"),
     trim = require("trim"),
     Response = require("./response"),
@@ -15,7 +15,7 @@ var PromisePolyfill = require("promise_polyfill"),
 function parseResponseHeadersNode(responseHeaders) {
     var headers = {};
 
-    forEach(responseHeaders, function(value, key) {
+    objectForEach(responseHeaders, function(value, key) {
         if (key && value) {
             key = camelcaseHeader(key);
             value = trim(value);

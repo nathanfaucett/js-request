@@ -2,7 +2,7 @@ var PromisePolyfill = require("promise_polyfill"),
     XMLHttpRequestPolyfill = require("xmlhttprequest_polyfill"),
     isFunction = require("is_function"),
     isString = require("is_string"),
-    forEach = require("for_each"),
+    objectForEach = require("object-for_each"),
     trim = require("trim"),
     extend = require("extend"),
     Response = require("./response"),
@@ -21,7 +21,7 @@ function parseResponseHeaders(responseHeaders) {
     var headers = {},
         raw = responseHeaders.split("\n");
 
-    forEach(raw, function(header) {
+    objectForEach(raw, function(header) {
         var tmp = header.split(":"),
             key = tmp[0],
             value = tmp[1];
@@ -161,7 +161,7 @@ function request(options) {
     );
 
     if (canSetRequestHeader) {
-        forEach(options.headers, function(value, key) {
+        objectForEach(options.headers, function(value, key) {
             if (isString(value)) {
                 if (key === "Content-Type" && canOverrideMimeType) {
                     xhr.overrideMimeType(value);

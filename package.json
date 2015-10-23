@@ -8,27 +8,34 @@
   },
   "main": "src/index.js",
   "browser": "src/browser.js",
+  "scripts": {
+    "test": "npm run test-node",
+    "test-node": "node ./test | ./node_modules/.bin/tap-spec",
+    "test-node-raw": "node ./test",
+    "test-browser-local": "zuul --local 9999 --ui tape -- ./test"
+  },
   "keywords": [
     "request",
     "request.js"
   ],
-  "scripts": {
-    "example": "comn -f example/client.js -o example/client.min.js"
-  },
   "author": "Nathan Faucett",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-jsbeautifier": ""
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-jsbeautifier": "^0.2.10",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.0",
+    "zuul": "^3.6.0"
   },
   "dependencies": {
     "capitalize_string": "git://github.com/nathanfaucett/capitalize_string.git",
     "event_emitter": "git://github.com/nathanfaucett/event_emitter.git",
     "extend": "git://github.com/nathanfaucett/extend.git",
     "filter": "git://github.com/nathanfaucett/filter.git",
-    "for_each": "git://github.com/nathanfaucett/for_each.git",
+    "object-for_each": "git://github.com/nathanfaucett/object-for_each.git",
+    "array-for_each": "git://github.com/nathanfaucett/array-for_each.git",
     "is_function": "git://github.com/nathanfaucett/is_function.git",
     "is_string": "git://github.com/nathanfaucett/is_string.git",
     "map": "git://github.com/nathanfaucett/map.git",

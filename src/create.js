@@ -1,11 +1,11 @@
 module.exports = function createRequest(request) {
     var methods = require("methods"),
-        forEach = require("for_each"),
+        arrayForEach = require("array-for_each"),
         EventEmitter = require("event_emitter"),
         defaults = require("./defaults");
 
 
-    forEach(methods, function(method) {
+    arrayForEach(methods, function(method) {
         var upper = method.toUpperCase();
 
         request[method] = function(url, options) {
@@ -19,7 +19,7 @@ module.exports = function createRequest(request) {
     });
     request.mSearch = request["m-search"];
 
-    forEach(["post", "patch", "put"], function(method) {
+    arrayForEach(["post", "patch", "put"], function(method) {
         var upper = method.toUpperCase();
 
         request[method] = function(url, data, options) {

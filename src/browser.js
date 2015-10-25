@@ -1,1 +1,1 @@
-module.exports = require("./create")(require("./request_browser"));
+module.exports = require("./create")(require("./requestBrowser"));

@@ -1,10 +1,10 @@
+var methods = require("methods"),
+    arrayForEach = require("array-for_each"),
+    EventEmitter = require("event_emitter"),
+    defaults = require("./defaults");
+
+
 module.exports = function createRequest(request) {
-    var methods = require("methods"),
-        arrayForEach = require("array-for_each"),
-        EventEmitter = require("event_emitter"),
-        defaults = require("./defaults");
-
-
     arrayForEach(methods, function(method) {
         var upper = method.toUpperCase();
 

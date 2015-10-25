@@ -1,7 +1,7 @@
-var map = require("map"),
+var arrayMap = require("array-map"),
     capitalizeString = require("capitalize_string");
 
 
 module.exports = function camelcaseHeader(str) {
-    return map(str.split("-"), capitalizeString).join("-");
+    return arrayMap(str.split("-"), capitalizeString).join("-");
 };

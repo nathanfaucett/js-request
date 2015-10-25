@@ -5,10 +5,10 @@ var PromisePolyfill = require("promise_polyfill"),
     objectForEach = require("object-for_each"),
     trim = require("trim"),
     extend = require("extend"),
-    Response = require("./response"),
+    Response = require("./Response"),
     defaults = require("./defaults"),
-    camelcaseHeader = require("./camelcase_header"),
-    parseContentType = require("./parse_content_type");
+    camelcaseHeader = require("./camelcaseHeader"),
+    parseContentType = require("./parseContentType");
 
 
 var supportsFormData = typeof(FormData) !== "undefined";

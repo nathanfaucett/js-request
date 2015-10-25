@@ -4,12 +4,12 @@ var PromisePolyfill = require("promise_polyfill"),
     http = require("http"),
     urls = require("urls"),
     objectForEach = require("object-for_each"),
-    filter = require("filter"),
+    objectFilter = require("object-filter"),
     trim = require("trim"),
-    Response = require("./response"),
+    Response = require("./Response"),
     defaults = require("./defaults"),
-    camelcaseHeader = require("./camelcase_header"),
-    parseContentType = require("./parse_content_type");
+    camelcaseHeader = require("./camelcaseHeader"),
+    parseContentType = require("./parseContentType");
 
 
 function parseResponseHeadersNode(responseHeaders) {
@@ -47,7 +47,7 @@ function request(options) {
         method: options.method,
         auth: (options.user && options.password) ? options.user + ":" + options.password : null,
         agent: options.agent,
-        headers: filter(options.headers, isString)
+        headers: objectFilter(options.headers, isString)
     };
     req = http.request(nodeOptions);
 

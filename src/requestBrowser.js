@@ -173,7 +173,7 @@ function request(options) {
 
     if (options.transformRequest) {
         options.data = options.transformRequest(options.data);
-    } else {
+    } else if (options.data) {
         if (!isString(options.data) && !isFormData) {
             if (options.headers["Content-Type"] === "application/json") {
                 options.data = JSON.stringify(options.data);

@@ -4,12 +4,11 @@ var extend = require("extend"),
 
 
 function defaults(options) {
+
     options = extend({}, defaults.values, options);
 
     options.url = isString(options.url || (options.url = options.src)) ? options.url : null;
     options.method = isString(options.method) ? options.method.toUpperCase() : "GET";
-
-    options.data = options.data;
 
     options.transformRequest = isFunction(options.transformRequest) ? options.transformRequest : null;
     options.transformResponse = isFunction(options.transformResponse) ? options.transformResponse : null;
@@ -31,6 +30,7 @@ function defaults(options) {
 defaults.values = {
     url: "",
     method: "GET",
+    data: null,
     headers: {
         Accept: "*/*",
         "X-Requested-With": "XMLHttpRequest"

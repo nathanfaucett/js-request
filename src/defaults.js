@@ -33,6 +33,7 @@ defaults.values = {
     data: null,
     headers: {
         Accept: "*/*",
+        "Transfer-Encoding": "chunked",
         "X-Requested-With": "XMLHttpRequest"
     }
 };

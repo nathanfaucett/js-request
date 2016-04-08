@@ -12,6 +12,11 @@ var PromisePolyfill = require("promise_polyfill"),
     parseContentType = require("./parseContentType");
 
 
+var defaultHeaders = {
+    "Transfer-Encoding": "chunked"
+};
+
+
 function parseResponseHeadersNode(responseHeaders) {
     var headers = {};
 
@@ -99,7 +104,7 @@ function request(options) {
             response.statusCode = statusCode;
 
             response.responseHeaders = parseResponseHeadersNode(res.headers);
-            response.requestHeaders = options.headers ? extend({}, options.headers) : {};
+            response.requestHeaders = options.headers ? extend({}, defaultHeaders, options.headers) : extend({}, defaultHeaders);
 
             response.data = null;
 

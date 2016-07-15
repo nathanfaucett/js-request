@@ -1,7 +1,7 @@
 {
-  "name": "request",
-  "version": "0.0.1",
-  "description": "requests for the browser and node.js",
+  "name": "@nathanfaucett/request",
+  "version": "0.0.2",
+  "description": "http requests for the browser and node.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanfaucett/request.git"
@@ -22,27 +22,27 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-jsbeautifier": "^0.2.10",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-jsbeautifier": "^0.2.13",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.0",
     "zuul": "^3.6.0"
   },
   "dependencies": {
-    "capitalize_string": "git://github.com/nathanfaucett/capitalize_string.git",
-    "event_emitter": "git://github.com/nathanfaucett/event_emitter.git",
-    "extend": "git://github.com/nathanfaucett/extend.git",
-    "object-filter": "git://github.com/nathanfaucett/object-filter.git",
-    "object-for_each": "git://github.com/nathanfaucett/object-for_each.git",
-    "array-for_each": "git://github.com/nathanfaucett/array-for_each.git",
-    "is_function": "git://github.com/nathanfaucett/is_function.git",
-    "is_string": "git://github.com/nathanfaucett/is_string.git",
-    "array-map": "git://github.com/nathanfaucett/array-map.git",
-    "methods": "git://github.com/nathanfaucett/methods.git",
-    "promise_polyfill": "git://github.com/nathanfaucett/promise_polyfill.git",
-    "trim": "git://github.com/nathanfaucett/trim.git",
-    "urls": "git://github.com/nathanfaucett/urls.git",
-    "xmlhttprequest_polyfill": "nathanfaucett/xmlhttprequest_polyfill.git"
+    "@nathanfaucett/capitalize_string": "^0.0.1",
+    "@nathanfaucett/event_emitter": "^0.0.1",
+    "@nathanfaucett/extend": "^0.0.1",
+    "@nathanfaucett/object-filter": "^0.0.1",
+    "@nathanfaucett/object-for_each": "^0.0.1",
+    "@nathanfaucett/array-for_each": "^0.0.1",
+    "@nathanfaucett/is_function": "^0.0.1",
+    "@nathanfaucett/is_string": "^0.0.1",
+    "@nathanfaucett/array-map": "^0.0.1",
+    "@nathanfaucett/methods": "^0.0.1",
+    "@nathanfaucett/promise_polyfill": "^0.0.1",
+    "@nathanfaucett/trim": "^0.0.1",
+    "@nathanfaucett/urls": "^0.0.2",
+    "@nathanfaucett/xmlhttprequest_polyfill": "^0.0.1"
   }
 }

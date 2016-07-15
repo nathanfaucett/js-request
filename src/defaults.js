@@ -1,6 +1,6 @@
-var extend = require("extend"),
-    isString = require("is_string"),
-    isFunction = require("is_function");
+var extend = require("@nathanfaucett/extend"),
+    isString = require("@nathanfaucett/is_string"),
+    isFunction = require("@nathanfaucett/is_function");
 
 
 function defaults(options) {

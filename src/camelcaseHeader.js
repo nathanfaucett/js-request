@@ -1,5 +1,5 @@
-var arrayMap = require("array-map"),
-    capitalizeString = require("capitalize_string");
+var arrayMap = require("@nathanfaucett/array-map"),
+    capitalizeString = require("@nathanfaucett/capitalize_string");
 
 
 module.exports = function camelcaseHeader(str) {

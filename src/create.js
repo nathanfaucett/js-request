@@ -1,6 +1,6 @@
-var methods = require("methods"),
-    arrayForEach = require("array-for_each"),
-    EventEmitter = require("event_emitter"),
+var methods = require("@nathanfaucett/methods"),
+    arrayForEach = require("@nathanfaucett/array-for_each"),
+    EventEmitter = require("@nathanfaucett/event_emitter"),
     defaults = require("./defaults");
 
 

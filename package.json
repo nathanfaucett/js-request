@@ -1,6 +1,6 @@
 {
   "name": "@nathanfaucett/request",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "http requests for the browser and node.js",
   "repository": {
     "type": "git",

@@ -5,6 +5,7 @@ var methods = require("@nathanfaucett/methods"),
 
 
 module.exports = function createRequest(request) {
+
     arrayForEach(methods, function(method) {
         var upper = method.toUpperCase();
 

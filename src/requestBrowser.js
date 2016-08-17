@@ -161,6 +161,10 @@ function request(options) {
     );
 
     if (canSetRequestHeader) {
+        if (options.headers && options.headers["Content-Type"] && isFormData) {
+            delete options.headers["Content-Type"];
+        }
+
         objectForEach(options.headers, function(value, key) {
             if (isString(value)) {
                 if (key === "Content-Type" && canOverrideMimeType) {

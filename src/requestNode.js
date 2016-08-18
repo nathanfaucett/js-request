@@ -1,5 +1,6 @@
 var PromisePolyfill = require("@nathanfaucett/promise_polyfill"),
     isString = require("@nathanfaucett/is_string"),
+    isNull = require("@nathanfaucett/is_null"),
     extend = require("@nathanfaucett/extend"),
     http = require("http"),
     urls = require("@nathanfaucett/urls"),
@@ -40,7 +41,8 @@ function parseResponseHeadersNode(responseHeaders) {
 function request(options) {
     var results = "",
         plugins = request.plugins,
-        fullUrl, nodeOptions, req, defer;
+        defer = null,
+        fullUrl, nodeOptions, req;
 
     options = defaults(options);
 
@@ -69,7 +71,7 @@ function request(options) {
         if (options.isPromise) {
             defer.resolve(response);
         } else {
-            if (options.success) {
+            if (!isNull(options.success)) {
                 options.success(response);
             }
         }
@@ -82,7 +84,7 @@ function request(options) {
         if (options.isPromise) {
             defer.reject(response);
         } else {
-            if (options.error) {
+            if (!isNull(options.error)) {
                 options.error(response);
             }
         }
@@ -168,7 +170,7 @@ function request(options) {
     req.end(options.data);
     plugins.emit("request", req, options);
 
-    return defer ? defer.promise : undefined;
+    return isNull(defer) ? undefined : defer.promise;
 }
 
 

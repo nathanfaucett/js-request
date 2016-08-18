@@ -2,6 +2,7 @@ var PromisePolyfill = require("@nathanfaucett/promise_polyfill"),
     XMLHttpRequestPolyfill = require("@nathanfaucett/xmlhttprequest_polyfill"),
     isFunction = require("@nathanfaucett/is_function"),
     isString = require("@nathanfaucett/is_string"),
+    isNull = require("@nathanfaucett/is_null"),
     objectForEach = require("@nathanfaucett/object-for_each"),
     trim = require("@nathanfaucett/trim"),
     extend = require("@nathanfaucett/extend"),
@@ -57,7 +58,8 @@ function request(options) {
         plugins = request.plugins,
         canSetRequestHeader = isFunction(xhr.setRequestHeader),
         canOverrideMimeType = isFunction(xhr.overrideMimeType),
-        isFormData, defer;
+        defer = null,
+        isFormData;
 
     options = defaults(options);
 
@@ -76,7 +78,7 @@ function request(options) {
         if (options.isPromise) {
             defer.resolve(response);
         } else {
-            if (options.success) {
+            if (!isNull(options.success)) {
                 options.success(response);
             }
         }
@@ -89,7 +91,7 @@ function request(options) {
         if (options.isPromise) {
             defer.reject(response);
         } else {
-            if (options.error) {
+            if (!isNull(options.error)) {
                 options.error(response);
             }
         }
@@ -189,7 +191,7 @@ function request(options) {
 
     xhr.send(options.data);
 
-    return defer ? defer.promise : undefined;
+    return isNull(defer) ? undefined : defer.promise;
 }
 
 

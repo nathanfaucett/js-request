@@ -3,5 +3,5 @@ var arrayMap = require("@nathanfaucett/array-map"),
 
 
 module.exports = function camelcaseHeader(str) {
-    return arrayMap(str.split("-"), capitalizeString).join("-");
+    return arrayMap(str.toLowerCase().split("-"), capitalizeString).join("-");
 };

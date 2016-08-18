@@ -3,7 +3,7 @@ var PromisePolyfill = require("@nathanfaucett/promise_polyfill"),
     isNull = require("@nathanfaucett/is_null"),
     extend = require("@nathanfaucett/extend"),
     http = require("http"),
-    urls = require("@nathanfaucett/urls"),
+    url = require("@nathanfaucett/url"),
     objectForEach = require("@nathanfaucett/object-for_each"),
     objectFilter = require("@nathanfaucett/object-filter"),
     trim = require("@nathanfaucett/trim"),
@@ -46,7 +46,7 @@ function request(options) {
 
     options = defaults(options);
 
-    fullUrl = urls.parse(options.url);
+    fullUrl = url.parse(options.url);
     nodeOptions = {
         hostname: fullUrl.hostname,
         port: fullUrl.port || 80,

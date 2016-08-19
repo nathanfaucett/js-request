@@ -1,6 +1,6 @@
 {
   "name": "@nathanfaucett/request",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "http requests for the browser and node.js",
   "repository": {
     "type": "git",
@@ -44,6 +44,6 @@
     "@nathanfaucett/promise_polyfill": "^0.0.1",
     "@nathanfaucett/trim": "^0.0.1",
     "@nathanfaucett/url": "^0.0.1",
-    "@nathanfaucett/xmlhttprequest_polyfill": "^0.0.1"
+    "@nathanfaucett/xmlhttprequest_polyfill": "^0.0.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@nathanfaucett/request",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "http requests for the browser and node.js",
   "repository": {
     "type": "git",
@@ -33,17 +33,17 @@
     "@nathanfaucett/array-for_each": "^0.0.1",
     "@nathanfaucett/array-map": "^0.0.1",
     "@nathanfaucett/capitalize_string": "^0.0.1",
-    "@nathanfaucett/event_emitter": "^0.0.2",
+    "@nathanfaucett/event_emitter": "^0.0.3",
     "@nathanfaucett/extend": "^0.0.2",
     "@nathanfaucett/is_function": "^0.0.1",
     "@nathanfaucett/is_null": "0.0.1",
     "@nathanfaucett/is_string": "^0.0.1",
     "@nathanfaucett/methods": "^0.0.1",
-    "@nathanfaucett/object-filter": "^0.0.1",
-    "@nathanfaucett/object-for_each": "^0.0.1",
-    "@nathanfaucett/promise_polyfill": "^0.0.3",
+    "@nathanfaucett/object-filter": "^0.0.2",
+    "@nathanfaucett/object-for_each": "^0.0.2",
+    "@nathanfaucett/promise_polyfill": "^0.0.4",
     "@nathanfaucett/trim": "^0.0.1",
-    "@nathanfaucett/url": "^0.0.1",
-    "@nathanfaucett/xmlhttprequest_polyfill": "^0.0.3"
+    "@nathanfaucett/url": "^0.0.2",
+    "@nathanfaucett/xmlhttprequest_polyfill": "^0.0.4"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@nathanfaucett/request",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "http requests for the browser and node.js",
   "repository": {
     "type": "git",
@@ -22,12 +22,13 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-jsbeautifier": "^0.2.13",
-    "tap-spec": "^4.1.0",
-    "tape": "^4.2.0",
-    "zuul": "^3.6.0"
+    "@nathanfaucett/task": "^0.0.8",
+    "gulp-jsbeautifier": "^2.1.0",
+    "gulp-jshint": "^2.0.4",
+    "jshint": "^2.9.4",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3",
+    "zuul": "^3.11.1"
   },
   "dependencies": {
     "@nathanfaucett/array-for_each": "^0.0.1",
@@ -38,7 +39,7 @@
     "@nathanfaucett/is_function": "^0.0.1",
     "@nathanfaucett/is_null": "0.0.1",
     "@nathanfaucett/is_string": "^0.0.1",
-    "@nathanfaucett/methods": "^0.0.1",
+    "@nathanfaucett/methods": "^0.0.2",
     "@nathanfaucett/object-filter": "^0.0.2",
     "@nathanfaucett/object-for_each": "^0.0.2",
     "@nathanfaucett/promise_polyfill": "^0.0.4",

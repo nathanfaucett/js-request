@@ -16,52 +16,22 @@ var supportsFormData = typeof(FormData) !== "undefined";
 
 
 defaults.values.XMLHttpRequest = XMLHttpRequestPolyfill;
+defaults.values.xmlHttpRequestOptions = {};
 
 
-function parseResponseHeaders(responseHeaders) {
-    var headers = {},
-        raw = responseHeaders.split("\n");
+module.exports = request;
 
-    objectForEach(raw, function(header) {
-        var tmp = header.split(":"),
-            key = tmp[0],
-            value = tmp[1];
-
-        if (key && value) {
-            key = camelcaseHeader(key);
-            value = trim(value);
-
-            if (key === "Content-Length") {
-                value = +value;
-            }
-
-            headers[key] = value;
-        }
-    });
-
-    return headers;
-}
-
-
-function addEventListener(xhr, event, listener) {
-    if (isFunction(xhr.addEventListener)) {
-        xhr.addEventListener(event, listener, false);
-    } else if (isFunction(xhr.attachEvent)) {
-        xhr.attachEvent("on" + event, listener);
-    } else {
-        xhr["on" + event] = listener;
-    }
-}
 
 function request(options) {
-    var xhr = new defaults.values.XMLHttpRequest(),
-        plugins = request.plugins,
-        canSetRequestHeader = isFunction(xhr.setRequestHeader),
-        canOverrideMimeType = isFunction(xhr.overrideMimeType),
+    var plugins = request.plugins,
         defer = null,
-        isFormData;
+        xhr, canSetRequestHeader, canOverrideMimeType, isFormData;
 
     options = defaults(options);
+
+    xhr = new options.XMLHttpRequest(options.xmlHttpRequestOptions);
+    canSetRequestHeader = isFunction(xhr.setRequestHeader);
+    canOverrideMimeType = isFunction(xhr.overrideMimeType);
 
     plugins.emit("before", xhr, options);
 
@@ -195,4 +165,37 @@ function request(options) {
 }
 
 
-module.exports = request;
+function parseResponseHeaders(responseHeaders) {
+    var headers = {},
+        raw = responseHeaders.split("\n");
+
+    objectForEach(raw, function(header) {
+        var tmp = header.split(":"),
+            key = tmp[0],
+            value = tmp[1];
+
+        if (key && value) {
+            key = camelcaseHeader(key);
+            value = trim(value);
+
+            if (key === "Content-Length") {
+                value = +value;
+            }
+
+            headers[key] = value;
+        }
+    });
+
+    return headers;
+}
+
+
+function addEventListener(xhr, event, listener) {
+    if (isFunction(xhr.addEventListener)) {
+        xhr.addEventListener(event, listener, false);
+    } else if (isFunction(xhr.attachEvent)) {
+        xhr.attachEvent("on" + event, listener);
+    } else {
+        xhr["on" + event] = listener;
+    }
+}

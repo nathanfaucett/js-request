@@ -18,24 +18,7 @@ var defaultHeaders = {
 };
 
 
-function parseResponseHeadersNode(responseHeaders) {
-    var headers = {};
-
-    objectForEach(responseHeaders, function(value, key) {
-        if (key && value) {
-            key = camelcaseHeader(key);
-            value = trim(value);
-
-            if (key === "Content-Length") {
-                value = +value;
-            }
-
-            headers[key] = value;
-        }
-    });
-
-    return headers;
-}
+module.exports = request;
 
 
 function request(options) {
@@ -174,4 +157,21 @@ function request(options) {
 }
 
 
-module.exports = request;
+function parseResponseHeadersNode(responseHeaders) {
+    var headers = {};
+
+    objectForEach(responseHeaders, function(value, key) {
+        if (key && value) {
+            key = camelcaseHeader(key);
+            value = trim(value);
+
+            if (key === "Content-Length") {
+                value = +value;
+            }
+
+            headers[key] = value;
+        }
+    });
+
+    return headers;
+}

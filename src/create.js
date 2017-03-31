@@ -18,7 +18,6 @@ module.exports = function createRequest(request) {
             return request(options);
         };
     });
-    request.mSearch = request["m-search"];
 
     arrayForEach(["post", "patch", "put"], function(method) {
         var upper = method.toUpperCase();
